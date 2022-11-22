@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:go_router/go_router.dart';
 import 'package:movie_app_2072046/view/login_page.dart';
 import 'package:movie_app_2072046/view/main_page.dart';
@@ -11,7 +12,7 @@ void main() {
 ColorScheme defaultColorScheme = const ColorScheme(
   primary: Color(0xFFf4C10F),
   secondary: Color(0xFF5a606b),
-  surface: Color(0xff181818),
+  surface: Color(0xFF151C26),
   background: Color(0xFF151C26),
   error: Color(0xffCF6679),
   onPrimary: Color(0xff000000),
@@ -22,8 +23,20 @@ ColorScheme defaultColorScheme = const ColorScheme(
   brightness: Brightness.dark,
 );
 
-class MyApp extends StatelessWidget {
+class MyApp extends StatefulWidget {
   MyApp({Key? key}) : super(key: key);
+
+  @override
+  State<MyApp> createState() => _MyAppState();
+}
+
+class _MyAppState extends State<MyApp> {
+  @override
+  void initState() {
+    SystemChrome.setEnabledSystemUIMode(SystemUiMode.manual,
+        overlays: [SystemUiOverlay.top]);
+    super.initState();
+  }
 
   final GoRouter router = GoRouter(routes: [
     GoRoute(

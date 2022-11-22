@@ -1,7 +1,6 @@
 import 'package:email_validator/email_validator.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:movie_app_2072046/repository/repository.dart';
 
 class Login extends StatefulWidget {
   @override
@@ -9,12 +8,6 @@ class Login extends StatefulWidget {
 }
 
 class _LoginState extends State<Login> {
-  //!! Sementara
-  void initState() {
-    MoveRepository().getMovies();
-    debugPrint("test");
-  }
-
   final _formKey = GlobalKey<FormState>();
   var rememberValue = false;
 
