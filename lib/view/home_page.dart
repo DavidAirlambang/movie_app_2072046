@@ -20,7 +20,7 @@ class _HomePageState extends State<HomePage> {
       appBar: AppBar(
         title: const Text(
           "Home Page",
-          style: TextStyle(color: Color(0xFFf4C10F)),
+          style: TextStyle(color: Color(0xFFf4C10F), fontSize: 22),
         ),
         centerTitle: true,
         leading: TextButton(
@@ -44,4 +44,21 @@ class _HomePageState extends State<HomePage> {
       ),
     );
   }
+}
+
+Widget loadingIndicator() {
+  return Center(
+    child: Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: const [
+        CircularProgressIndicator(
+            // color: primaryColor,
+            ),
+        SizedBox(height: 18),
+        Text(
+          'Loading',
+        ),
+      ],
+    ),
+  );
 }

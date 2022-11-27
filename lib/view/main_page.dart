@@ -24,7 +24,7 @@ class _MainPageState extends State<MainPage> {
 //sementara
   @override
   void initState() {
-    MovieService().getListPlayingMovies();
+    MovieService().getMovieDetail(436270);
   }
 
   @override
@@ -56,24 +56,6 @@ class _MainPageState extends State<MainPage> {
           page = value;
           log(value.toString());
         }),
-      ),
-    );
-  }
-
-//belum
-  Widget loadingIndicator() {
-    return Center(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: const [
-          CircularProgressIndicator(
-              // color: primaryColor,
-              ),
-          SizedBox(height: 18),
-          Text(
-            'Loading',
-          ),
-        ],
       ),
     );
   }

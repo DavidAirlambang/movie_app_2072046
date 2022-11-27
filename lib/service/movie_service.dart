@@ -1,5 +1,7 @@
 import 'dart:developer';
 import 'package:dio/dio.dart';
+import 'package:movie_app_2072046/entity/coming/coming.dart';
+import 'package:movie_app_2072046/entity/detail/detail.dart';
 import 'package:movie_app_2072046/entity/popular/popular.dart';
 import 'package:movie_app_2072046/repository/repository.dart';
 
@@ -24,8 +26,9 @@ class MovieService {
       List<PopularMovie> populars = (result.data['results'] as List)
           .map((e) => PopularMovie.fromJson(e))
           .toList();
-      return populars;
-    } catch (e) {
+      return populars.take(5).toList();
+    } on DioError catch (e) {
+      log(e.response.toString());
       return null;
     }
   }
@@ -38,13 +41,52 @@ class MovieService {
     try {
       var result = await dio.get(url);
 
-      log((result.data['results'] as List).toString());
+      // log((result.data['results'] as List).toString());
 
       List<PopularMovie> playings = (result.data['results'] as List)
           .map((e) => PopularMovie.fromJson(e))
           .toList();
       return playings;
-    } catch (e) {
+    } on DioError catch (e) {
+      log(e.response.toString());
+      return null;
+    }
+  }
+
+  //Coming Soon
+  Future<List<ComingMovie>?> getListComingMovies() async {
+    Dio dio = Dio();
+    String url =
+        '$baseUrl/movie/upcoming?api_key=$apiKey&language=$language&page=1&region=US';
+    try {
+      var result = await dio.get(url);
+
+      // log((result.data['results'] as List).toString());
+
+      List<ComingMovie> comings = (result.data['results'] as List)
+          .map((e) => ComingMovie.fromJson(e))
+          .toList();
+      return comings;
+    } on DioError catch (e) {
+      log(e.response.toString());
+      return null;
+    }
+  }
+
+  //Detail Movie
+  Future<MovieDetail?> getMovieDetail(int id) async {
+    Dio dio = Dio();
+    String url = '$baseUrl/movie/$id?api_key=$apiKey&language=$language';
+    ;
+    try {
+      var result = await dio.get(url);
+
+      log((result.data).toString());
+
+      MovieDetail movieDetail = MovieDetail.fromJson(result.data);
+      return movieDetail;
+    } on DioError catch (e) {
+      log(e.response.toString());
       return null;
     }
   }

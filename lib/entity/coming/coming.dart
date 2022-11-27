@@ -2,12 +2,12 @@
 
 import 'package:freezed_annotation/freezed_annotation.dart';
 
-part 'playing.freezed.dart';
-part 'playing.g.dart';
+part 'coming.freezed.dart';
+part 'coming.g.dart';
 
 @freezed
-class PlayingMovie with _$PlayingMovie {
-  const factory PlayingMovie({
+class ComingMovie with _$ComingMovie {
+  const factory ComingMovie({
     bool? adult,
     String? backdrop_path,
     List<int>? genre_ids,
@@ -22,8 +22,8 @@ class PlayingMovie with _$PlayingMovie {
     bool? video,
     double? vote_average,
     int? vote_count,
-  }) = _PlayingMovie;
+  }) = _ComingMovie;
 
-  factory PlayingMovie.fromJson(Map<String, dynamic> json) =>
-      _$PlayingMovieFromJson(json);
+  factory ComingMovie.fromJson(Map<String, dynamic> json) =>
+      _$ComingMovieFromJson(json);
 }

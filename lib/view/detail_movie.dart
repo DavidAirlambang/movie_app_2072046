@@ -1,0 +1,288 @@
+import 'dart:developer';
+import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:movie_app_2072046/service/movie_service.dart';
+import 'package:movie_app_2072046/widget/movie_poster.dart';
+
+import '../repository/repository.dart';
+
+class DetailMovie extends StatelessWidget {
+  final int id;
+  const DetailMovie({super.key, required this.id});
+
+// MoviePoster(path: snapshot.data!.poster_path!)
+
+  @override
+  Widget build(BuildContext context) {
+    List genres = [];
+    int length = 0;
+    //statusbar
+    SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
+      statusBarColor: Colors.transparent,
+    ));
+    //view
+    return Scaffold(
+      extendBodyBehindAppBar: true,
+      appBar: AppBar(
+        iconTheme: const IconThemeData(color: Color(0xFFf4C10F)),
+        backgroundColor: Colors.transparent,
+        elevation: 0,
+      ),
+      body: FutureBuilder(
+        future: MovieService().getMovieDetail(id),
+        builder: (context, snapshot) {
+          if (snapshot.hasData) {
+            length = snapshot.data!.genres!.length;
+            for (var element in snapshot.data!.genres!) {
+              genres.add(element['name']);
+              log(element["name"].toString());
+            }
+            log(genres.take(length).toString());
+            log(length.toString());
+            return Container(
+              color: Theme.of(context).colorScheme.background,
+              child: ListView(
+                padding: const EdgeInsets.only(top: 0),
+                children: [
+                  Column(
+                    children: [
+                      Stack(
+                        clipBehavior: Clip.none,
+                        alignment: Alignment.center,
+                        children: [
+                          Container(
+                            decoration: BoxDecoration(
+                              color: Theme.of(context).colorScheme.secondary,
+                            ),
+                            child: Image(
+                              image: NetworkImage(
+                                '${MovieRepository.imageBaseURL}original/${snapshot.data?.backdrop_path}',
+                              ),
+                              width: double.infinity,
+                              fit: BoxFit.cover,
+                            ),
+                          ),
+                          Positioned(
+                              left: 16,
+                              top: 200,
+                              child: Row(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  MoviePoster(
+                                      path: snapshot.data!.poster_path!),
+                                  Container(
+                                    padding: const EdgeInsets.only(
+                                        top: 30, left: 16),
+                                    child: Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        Container(
+                                          width: 200,
+                                          child: Text(
+                                            snapshot.data!.title!,
+                                            style: const TextStyle(
+                                                fontSize: 22,
+                                                fontWeight: FontWeight.bold,
+                                                letterSpacing: 1),
+                                          ),
+                                        ),
+                                        const SizedBox(height: 10),
+                                        dataMovie(
+                                          "Year           ",
+                                          snapshot.data!.release_date
+                                              .toString()
+                                              .substring(0, 4),
+                                        ),
+                                        const SizedBox(height: 5),
+                                        dataMovie(
+                                            "Production",
+                                            snapshot
+                                                .data!
+                                                .production_companies![0]
+                                                    ['name']
+                                                .toString()),
+                                        const SizedBox(height: 5),
+                                        dataMovie(
+                                            "Origin         ",
+                                            snapshot
+                                                .data!
+                                                .production_companies![0]
+                                                    ['origin_country']
+                                                .toString()),
+                                        const SizedBox(height: 5),
+                                        dataMovie(
+                                            "Genres      ",
+                                            genres
+                                                .take(length)
+                                                .join(", ")
+                                                .toString())
+                                      ],
+                                    ),
+                                  ),
+                                ],
+                              )),
+                          Positioned(
+                            top: 420,
+                            child: Padding(
+                              padding:
+                                  const EdgeInsets.symmetric(horizontal: 20),
+                              child: Column(children: [
+                                Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Container(
+                                      height: 60,
+                                      padding: const EdgeInsets.symmetric(
+                                          vertical: 8, horizontal: 20),
+                                      decoration: BoxDecoration(
+                                          border: Border.all(
+                                              color: Theme.of(context)
+                                                  .colorScheme
+                                                  .primary
+                                                  .withOpacity(0.2),
+                                              width: 2),
+                                          borderRadius:
+                                              BorderRadius.circular(10)),
+                                      child: Column(children: [
+                                        Row(
+                                          children:
+                                              List<Icon>.generate(5, (index) {
+                                            return const Icon(
+                                              Icons.star,
+                                              color: Colors.yellow,
+                                              size: 12,
+                                            );
+                                          }),
+                                        ),
+                                        const Spacer(),
+                                        Text(
+                                          snapshot.data!.vote_average!
+                                                  .toString()
+                                                  .substring(0, 3) +
+                                              "/10",
+                                          style: const TextStyle(
+                                              fontSize: 18,
+                                              fontWeight: FontWeight.bold),
+                                        )
+                                      ]),
+                                    ),
+                                    boxInfo(
+                                        "Run Time",
+                                        snapshot.data!.runtime.toString() +
+                                            " Min"),
+                                    boxInfo("Status",
+                                        snapshot.data!.status.toString())
+                                  ],
+                                )
+                              ]),
+                            ),
+                          ),
+                          Positioned(
+                            top: 510,
+                            child: Center(
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  const Text(
+                                    "Synopsis",
+                                    style: TextStyle(
+                                      fontSize: 21,
+                                    ),
+                                  ),
+                                  Container(
+                                    margin: const EdgeInsets.only(top: 10),
+                                    width: 330,
+                                    child: Text(
+                                      snapshot.data!.overview!,
+                                      textAlign: TextAlign.justify,
+                                      style: const TextStyle(height: 1.5),
+                                    ),
+                                  )
+                                ],
+                              ),
+                            ),
+                          )
+                        ],
+                      )
+                    ],
+                  )
+                ],
+              ),
+            );
+          } else {
+            return Text(id.toString());
+          }
+        },
+      ),
+      bottomSheet: Container(
+        padding: const EdgeInsets.fromLTRB(16, 16, 20, 25),
+        color: Theme.of(context).colorScheme.background,
+        child: ElevatedButton(
+          onPressed: () {},
+          style: ElevatedButton.styleFrom(
+            backgroundColor: Theme.of(context).colorScheme.primary,
+            padding: const EdgeInsets.symmetric(vertical: 12),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(10),
+            ),
+          ),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: const [
+              Icon(Icons.add),
+              SizedBox(
+                width: 10,
+              ),
+              Text("Tambah Tiket")
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+Widget dataMovie(String type, var release) {
+  return Row(
+    children: [
+      Text(
+        type,
+        style: const TextStyle(color: Color(0xFF5a606b), fontSize: 16),
+      ),
+      const SizedBox(width: 20),
+      SizedBox(
+        width: 140,
+        child: Text(
+          release,
+          style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w300),
+          maxLines: 2,
+        ),
+      )
+    ],
+  );
+}
+
+Widget boxInfo(String judul, String isi) {
+  return Container(
+    margin: const EdgeInsets.only(left: 10),
+    height: 60,
+    padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 20),
+    decoration: BoxDecoration(
+        border: Border.all(
+            color: const Color(0xFFf4C10F).withOpacity(0.2), width: 2),
+        borderRadius: BorderRadius.circular(10)),
+    child: Column(children: [
+      Text(
+        judul,
+        style: const TextStyle(fontSize: 16, color: Color(0xFF5a606b)),
+      ),
+      const Spacer(),
+      Text(
+        isi,
+        style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+      )
+    ]),
+  );
+}

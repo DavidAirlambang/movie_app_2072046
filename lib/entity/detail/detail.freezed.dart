@@ -3,7 +3,7 @@
 // ignore_for_file: type=lint
 // ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target
 
-part of 'playing.dart';
+part of 'detail.dart';
 
 // **************************************************************************
 // FreezedGenerator
@@ -14,15 +14,17 @@ T _$identity<T>(T value) => value;
 final _privateConstructorUsedError = UnsupportedError(
     'It seems like you constructed your class using `MyClass._()`. This constructor is only meant to be used by freezed and you are not supposed to need it nor use it.\nPlease check the documentation here for more information: https://github.com/rrousselGit/freezed#custom-getters-and-methods');
 
-PlayingMovie _$PlayingMovieFromJson(Map<String, dynamic> json) {
-  return _PlayingMovie.fromJson(json);
+MovieDetail _$MovieDetailFromJson(Map<String, dynamic> json) {
+  return _MovieDetail.fromJson(json);
 }
 
 /// @nodoc
-mixin _$PlayingMovie {
+mixin _$MovieDetail {
   bool? get adult => throw _privateConstructorUsedError;
   String? get backdrop_path => throw _privateConstructorUsedError;
-  List<int>? get genre_ids => throw _privateConstructorUsedError;
+  int? get budget => throw _privateConstructorUsedError;
+  List<Map>? get production_companies => throw _privateConstructorUsedError;
+  List<Map>? get genres => throw _privateConstructorUsedError;
   int? get id => throw _privateConstructorUsedError;
   String? get original_language => throw _privateConstructorUsedError;
   String? get original_title => throw _privateConstructorUsedError;
@@ -30,6 +32,10 @@ mixin _$PlayingMovie {
   double? get popularity => throw _privateConstructorUsedError;
   String? get poster_path => throw _privateConstructorUsedError;
   DateTime? get release_date => throw _privateConstructorUsedError;
+  int? get revenue => throw _privateConstructorUsedError;
+  int? get runtime => throw _privateConstructorUsedError;
+  String? get status => throw _privateConstructorUsedError;
+  String? get tagline => throw _privateConstructorUsedError;
   String? get title => throw _privateConstructorUsedError;
   bool? get video => throw _privateConstructorUsedError;
   double? get vote_average => throw _privateConstructorUsedError;
@@ -37,20 +43,22 @@ mixin _$PlayingMovie {
 
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
   @JsonKey(ignore: true)
-  $PlayingMovieCopyWith<PlayingMovie> get copyWith =>
+  $MovieDetailCopyWith<MovieDetail> get copyWith =>
       throw _privateConstructorUsedError;
 }
 
 /// @nodoc
-abstract class $PlayingMovieCopyWith<$Res> {
-  factory $PlayingMovieCopyWith(
-          PlayingMovie value, $Res Function(PlayingMovie) then) =
-      _$PlayingMovieCopyWithImpl<$Res, PlayingMovie>;
+abstract class $MovieDetailCopyWith<$Res> {
+  factory $MovieDetailCopyWith(
+          MovieDetail value, $Res Function(MovieDetail) then) =
+      _$MovieDetailCopyWithImpl<$Res, MovieDetail>;
   @useResult
   $Res call(
       {bool? adult,
       String? backdrop_path,
-      List<int>? genre_ids,
+      int? budget,
+      List<Map>? production_companies,
+      List<Map>? genres,
       int? id,
       String? original_language,
       String? original_title,
@@ -58,6 +66,10 @@ abstract class $PlayingMovieCopyWith<$Res> {
       double? popularity,
       String? poster_path,
       DateTime? release_date,
+      int? revenue,
+      int? runtime,
+      String? status,
+      String? tagline,
       String? title,
       bool? video,
       double? vote_average,
@@ -65,9 +77,9 @@ abstract class $PlayingMovieCopyWith<$Res> {
 }
 
 /// @nodoc
-class _$PlayingMovieCopyWithImpl<$Res, $Val extends PlayingMovie>
-    implements $PlayingMovieCopyWith<$Res> {
-  _$PlayingMovieCopyWithImpl(this._value, this._then);
+class _$MovieDetailCopyWithImpl<$Res, $Val extends MovieDetail>
+    implements $MovieDetailCopyWith<$Res> {
+  _$MovieDetailCopyWithImpl(this._value, this._then);
 
   // ignore: unused_field
   final $Val _value;
@@ -79,7 +91,9 @@ class _$PlayingMovieCopyWithImpl<$Res, $Val extends PlayingMovie>
   $Res call({
     Object? adult = freezed,
     Object? backdrop_path = freezed,
-    Object? genre_ids = freezed,
+    Object? budget = freezed,
+    Object? production_companies = freezed,
+    Object? genres = freezed,
     Object? id = freezed,
     Object? original_language = freezed,
     Object? original_title = freezed,
@@ -87,6 +101,10 @@ class _$PlayingMovieCopyWithImpl<$Res, $Val extends PlayingMovie>
     Object? popularity = freezed,
     Object? poster_path = freezed,
     Object? release_date = freezed,
+    Object? revenue = freezed,
+    Object? runtime = freezed,
+    Object? status = freezed,
+    Object? tagline = freezed,
     Object? title = freezed,
     Object? video = freezed,
     Object? vote_average = freezed,
@@ -101,10 +119,18 @@ class _$PlayingMovieCopyWithImpl<$Res, $Val extends PlayingMovie>
           ? _value.backdrop_path
           : backdrop_path // ignore: cast_nullable_to_non_nullable
               as String?,
-      genre_ids: freezed == genre_ids
-          ? _value.genre_ids
-          : genre_ids // ignore: cast_nullable_to_non_nullable
-              as List<int>?,
+      budget: freezed == budget
+          ? _value.budget
+          : budget // ignore: cast_nullable_to_non_nullable
+              as int?,
+      production_companies: freezed == production_companies
+          ? _value.production_companies
+          : production_companies // ignore: cast_nullable_to_non_nullable
+              as List<Map>?,
+      genres: freezed == genres
+          ? _value.genres
+          : genres // ignore: cast_nullable_to_non_nullable
+              as List<Map>?,
       id: freezed == id
           ? _value.id
           : id // ignore: cast_nullable_to_non_nullable
@@ -133,6 +159,22 @@ class _$PlayingMovieCopyWithImpl<$Res, $Val extends PlayingMovie>
           ? _value.release_date
           : release_date // ignore: cast_nullable_to_non_nullable
               as DateTime?,
+      revenue: freezed == revenue
+          ? _value.revenue
+          : revenue // ignore: cast_nullable_to_non_nullable
+              as int?,
+      runtime: freezed == runtime
+          ? _value.runtime
+          : runtime // ignore: cast_nullable_to_non_nullable
+              as int?,
+      status: freezed == status
+          ? _value.status
+          : status // ignore: cast_nullable_to_non_nullable
+              as String?,
+      tagline: freezed == tagline
+          ? _value.tagline
+          : tagline // ignore: cast_nullable_to_non_nullable
+              as String?,
       title: freezed == title
           ? _value.title
           : title // ignore: cast_nullable_to_non_nullable
@@ -154,17 +196,19 @@ class _$PlayingMovieCopyWithImpl<$Res, $Val extends PlayingMovie>
 }
 
 /// @nodoc
-abstract class _$$_PlayingMovieCopyWith<$Res>
-    implements $PlayingMovieCopyWith<$Res> {
-  factory _$$_PlayingMovieCopyWith(
-          _$_PlayingMovie value, $Res Function(_$_PlayingMovie) then) =
-      __$$_PlayingMovieCopyWithImpl<$Res>;
+abstract class _$$_MovieDetailCopyWith<$Res>
+    implements $MovieDetailCopyWith<$Res> {
+  factory _$$_MovieDetailCopyWith(
+          _$_MovieDetail value, $Res Function(_$_MovieDetail) then) =
+      __$$_MovieDetailCopyWithImpl<$Res>;
   @override
   @useResult
   $Res call(
       {bool? adult,
       String? backdrop_path,
-      List<int>? genre_ids,
+      int? budget,
+      List<Map>? production_companies,
+      List<Map>? genres,
       int? id,
       String? original_language,
       String? original_title,
@@ -172,6 +216,10 @@ abstract class _$$_PlayingMovieCopyWith<$Res>
       double? popularity,
       String? poster_path,
       DateTime? release_date,
+      int? revenue,
+      int? runtime,
+      String? status,
+      String? tagline,
       String? title,
       bool? video,
       double? vote_average,
@@ -179,11 +227,11 @@ abstract class _$$_PlayingMovieCopyWith<$Res>
 }
 
 /// @nodoc
-class __$$_PlayingMovieCopyWithImpl<$Res>
-    extends _$PlayingMovieCopyWithImpl<$Res, _$_PlayingMovie>
-    implements _$$_PlayingMovieCopyWith<$Res> {
-  __$$_PlayingMovieCopyWithImpl(
-      _$_PlayingMovie _value, $Res Function(_$_PlayingMovie) _then)
+class __$$_MovieDetailCopyWithImpl<$Res>
+    extends _$MovieDetailCopyWithImpl<$Res, _$_MovieDetail>
+    implements _$$_MovieDetailCopyWith<$Res> {
+  __$$_MovieDetailCopyWithImpl(
+      _$_MovieDetail _value, $Res Function(_$_MovieDetail) _then)
       : super(_value, _then);
 
   @pragma('vm:prefer-inline')
@@ -191,7 +239,9 @@ class __$$_PlayingMovieCopyWithImpl<$Res>
   $Res call({
     Object? adult = freezed,
     Object? backdrop_path = freezed,
-    Object? genre_ids = freezed,
+    Object? budget = freezed,
+    Object? production_companies = freezed,
+    Object? genres = freezed,
     Object? id = freezed,
     Object? original_language = freezed,
     Object? original_title = freezed,
@@ -199,12 +249,16 @@ class __$$_PlayingMovieCopyWithImpl<$Res>
     Object? popularity = freezed,
     Object? poster_path = freezed,
     Object? release_date = freezed,
+    Object? revenue = freezed,
+    Object? runtime = freezed,
+    Object? status = freezed,
+    Object? tagline = freezed,
     Object? title = freezed,
     Object? video = freezed,
     Object? vote_average = freezed,
     Object? vote_count = freezed,
   }) {
-    return _then(_$_PlayingMovie(
+    return _then(_$_MovieDetail(
       adult: freezed == adult
           ? _value.adult
           : adult // ignore: cast_nullable_to_non_nullable
@@ -213,10 +267,18 @@ class __$$_PlayingMovieCopyWithImpl<$Res>
           ? _value.backdrop_path
           : backdrop_path // ignore: cast_nullable_to_non_nullable
               as String?,
-      genre_ids: freezed == genre_ids
-          ? _value._genre_ids
-          : genre_ids // ignore: cast_nullable_to_non_nullable
-              as List<int>?,
+      budget: freezed == budget
+          ? _value.budget
+          : budget // ignore: cast_nullable_to_non_nullable
+              as int?,
+      production_companies: freezed == production_companies
+          ? _value._production_companies
+          : production_companies // ignore: cast_nullable_to_non_nullable
+              as List<Map>?,
+      genres: freezed == genres
+          ? _value._genres
+          : genres // ignore: cast_nullable_to_non_nullable
+              as List<Map>?,
       id: freezed == id
           ? _value.id
           : id // ignore: cast_nullable_to_non_nullable
@@ -245,6 +307,22 @@ class __$$_PlayingMovieCopyWithImpl<$Res>
           ? _value.release_date
           : release_date // ignore: cast_nullable_to_non_nullable
               as DateTime?,
+      revenue: freezed == revenue
+          ? _value.revenue
+          : revenue // ignore: cast_nullable_to_non_nullable
+              as int?,
+      runtime: freezed == runtime
+          ? _value.runtime
+          : runtime // ignore: cast_nullable_to_non_nullable
+              as int?,
+      status: freezed == status
+          ? _value.status
+          : status // ignore: cast_nullable_to_non_nullable
+              as String?,
+      tagline: freezed == tagline
+          ? _value.tagline
+          : tagline // ignore: cast_nullable_to_non_nullable
+              as String?,
       title: freezed == title
           ? _value.title
           : title // ignore: cast_nullable_to_non_nullable
@@ -267,11 +345,13 @@ class __$$_PlayingMovieCopyWithImpl<$Res>
 
 /// @nodoc
 @JsonSerializable()
-class _$_PlayingMovie implements _PlayingMovie {
-  const _$_PlayingMovie(
+class _$_MovieDetail implements _MovieDetail {
+  const _$_MovieDetail(
       {this.adult,
       this.backdrop_path,
-      final List<int>? genre_ids,
+      this.budget,
+      final List<Map>? production_companies,
+      final List<Map>? genres,
       this.id,
       this.original_language,
       this.original_title,
@@ -279,23 +359,39 @@ class _$_PlayingMovie implements _PlayingMovie {
       this.popularity,
       this.poster_path,
       this.release_date,
+      this.revenue,
+      this.runtime,
+      this.status,
+      this.tagline,
       this.title,
       this.video,
       this.vote_average,
       this.vote_count})
-      : _genre_ids = genre_ids;
+      : _production_companies = production_companies,
+        _genres = genres;
 
-  factory _$_PlayingMovie.fromJson(Map<String, dynamic> json) =>
-      _$$_PlayingMovieFromJson(json);
+  factory _$_MovieDetail.fromJson(Map<String, dynamic> json) =>
+      _$$_MovieDetailFromJson(json);
 
   @override
   final bool? adult;
   @override
   final String? backdrop_path;
-  final List<int>? _genre_ids;
   @override
-  List<int>? get genre_ids {
-    final value = _genre_ids;
+  final int? budget;
+  final List<Map>? _production_companies;
+  @override
+  List<Map>? get production_companies {
+    final value = _production_companies;
+    if (value == null) return null;
+    // ignore: implicit_dynamic_type
+    return EqualUnmodifiableListView(value);
+  }
+
+  final List<Map>? _genres;
+  @override
+  List<Map>? get genres {
+    final value = _genres;
     if (value == null) return null;
     // ignore: implicit_dynamic_type
     return EqualUnmodifiableListView(value);
@@ -316,6 +412,14 @@ class _$_PlayingMovie implements _PlayingMovie {
   @override
   final DateTime? release_date;
   @override
+  final int? revenue;
+  @override
+  final int? runtime;
+  @override
+  final String? status;
+  @override
+  final String? tagline;
+  @override
   final String? title;
   @override
   final bool? video;
@@ -326,19 +430,21 @@ class _$_PlayingMovie implements _PlayingMovie {
 
   @override
   String toString() {
-    return 'PlayingMovie(adult: $adult, backdrop_path: $backdrop_path, genre_ids: $genre_ids, id: $id, original_language: $original_language, original_title: $original_title, overview: $overview, popularity: $popularity, poster_path: $poster_path, release_date: $release_date, title: $title, video: $video, vote_average: $vote_average, vote_count: $vote_count)';
+    return 'MovieDetail(adult: $adult, backdrop_path: $backdrop_path, budget: $budget, production_companies: $production_companies, genres: $genres, id: $id, original_language: $original_language, original_title: $original_title, overview: $overview, popularity: $popularity, poster_path: $poster_path, release_date: $release_date, revenue: $revenue, runtime: $runtime, status: $status, tagline: $tagline, title: $title, video: $video, vote_average: $vote_average, vote_count: $vote_count)';
   }
 
   @override
   bool operator ==(dynamic other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
-            other is _$_PlayingMovie &&
+            other is _$_MovieDetail &&
             (identical(other.adult, adult) || other.adult == adult) &&
             (identical(other.backdrop_path, backdrop_path) ||
                 other.backdrop_path == backdrop_path) &&
+            (identical(other.budget, budget) || other.budget == budget) &&
             const DeepCollectionEquality()
-                .equals(other._genre_ids, _genre_ids) &&
+                .equals(other._production_companies, _production_companies) &&
+            const DeepCollectionEquality().equals(other._genres, _genres) &&
             (identical(other.id, id) || other.id == id) &&
             (identical(other.original_language, original_language) ||
                 other.original_language == original_language) &&
@@ -352,6 +458,10 @@ class _$_PlayingMovie implements _PlayingMovie {
                 other.poster_path == poster_path) &&
             (identical(other.release_date, release_date) ||
                 other.release_date == release_date) &&
+            (identical(other.revenue, revenue) || other.revenue == revenue) &&
+            (identical(other.runtime, runtime) || other.runtime == runtime) &&
+            (identical(other.status, status) || other.status == status) &&
+            (identical(other.tagline, tagline) || other.tagline == tagline) &&
             (identical(other.title, title) || other.title == title) &&
             (identical(other.video, video) || other.video == video) &&
             (identical(other.vote_average, vote_average) ||
@@ -362,42 +472,51 @@ class _$_PlayingMovie implements _PlayingMovie {
 
   @JsonKey(ignore: true)
   @override
-  int get hashCode => Object.hash(
-      runtimeType,
-      adult,
-      backdrop_path,
-      const DeepCollectionEquality().hash(_genre_ids),
-      id,
-      original_language,
-      original_title,
-      overview,
-      popularity,
-      poster_path,
-      release_date,
-      title,
-      video,
-      vote_average,
-      vote_count);
+  int get hashCode => Object.hashAll([
+        runtimeType,
+        adult,
+        backdrop_path,
+        budget,
+        const DeepCollectionEquality().hash(_production_companies),
+        const DeepCollectionEquality().hash(_genres),
+        id,
+        original_language,
+        original_title,
+        overview,
+        popularity,
+        poster_path,
+        release_date,
+        revenue,
+        runtime,
+        status,
+        tagline,
+        title,
+        video,
+        vote_average,
+        vote_count
+      ]);
 
   @JsonKey(ignore: true)
   @override
   @pragma('vm:prefer-inline')
-  _$$_PlayingMovieCopyWith<_$_PlayingMovie> get copyWith =>
-      __$$_PlayingMovieCopyWithImpl<_$_PlayingMovie>(this, _$identity);
+  _$$_MovieDetailCopyWith<_$_MovieDetail> get copyWith =>
+      __$$_MovieDetailCopyWithImpl<_$_MovieDetail>(this, _$identity);
 
   @override
   Map<String, dynamic> toJson() {
-    return _$$_PlayingMovieToJson(
+    return _$$_MovieDetailToJson(
       this,
     );
   }
 }
 
-abstract class _PlayingMovie implements PlayingMovie {
-  const factory _PlayingMovie(
+abstract class _MovieDetail implements MovieDetail {
+  const factory _MovieDetail(
       {final bool? adult,
       final String? backdrop_path,
-      final List<int>? genre_ids,
+      final int? budget,
+      final List<Map>? production_companies,
+      final List<Map>? genres,
       final int? id,
       final String? original_language,
       final String? original_title,
@@ -405,20 +524,28 @@ abstract class _PlayingMovie implements PlayingMovie {
       final double? popularity,
       final String? poster_path,
       final DateTime? release_date,
+      final int? revenue,
+      final int? runtime,
+      final String? status,
+      final String? tagline,
       final String? title,
       final bool? video,
       final double? vote_average,
-      final int? vote_count}) = _$_PlayingMovie;
+      final int? vote_count}) = _$_MovieDetail;
 
-  factory _PlayingMovie.fromJson(Map<String, dynamic> json) =
-      _$_PlayingMovie.fromJson;
+  factory _MovieDetail.fromJson(Map<String, dynamic> json) =
+      _$_MovieDetail.fromJson;
 
   @override
   bool? get adult;
   @override
   String? get backdrop_path;
   @override
-  List<int>? get genre_ids;
+  int? get budget;
+  @override
+  List<Map>? get production_companies;
+  @override
+  List<Map>? get genres;
   @override
   int? get id;
   @override
@@ -434,6 +561,14 @@ abstract class _PlayingMovie implements PlayingMovie {
   @override
   DateTime? get release_date;
   @override
+  int? get revenue;
+  @override
+  int? get runtime;
+  @override
+  String? get status;
+  @override
+  String? get tagline;
+  @override
   String? get title;
   @override
   bool? get video;
@@ -443,6 +578,6 @@ abstract class _PlayingMovie implements PlayingMovie {
   int? get vote_count;
   @override
   @JsonKey(ignore: true)
-  _$$_PlayingMovieCopyWith<_$_PlayingMovie> get copyWith =>
+  _$$_MovieDetailCopyWith<_$_MovieDetail> get copyWith =>
       throw _privateConstructorUsedError;
 }

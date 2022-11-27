@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:go_router/go_router.dart';
+import 'package:movie_app_2072046/view/coming_full.dart';
+import 'package:movie_app_2072046/view/detail_movie.dart';
 import 'package:movie_app_2072046/view/login_page.dart';
 import 'package:movie_app_2072046/view/main_page.dart';
+import 'package:movie_app_2072046/view/playing_full.dart';
 import 'package:movie_app_2072046/view/sign_up_page.dart';
 
 void main() {
@@ -53,8 +56,43 @@ class _MyAppState extends State<MyApp> {
     GoRoute(
         path: '/main_page',
         name: 'main',
-        builder: (context, state) => const MainPage()),
-  ], initialLocation: '/signIn');
+        builder: (context, state) => const MainPage(),
+        routes: [
+          GoRoute(
+              path: 'playing_full',
+              name: 'playingFull',
+              builder: (context, state) => const PlayingFullMovie(),
+              routes: [
+                GoRoute(
+                  path: 'detail_movie/:id',
+                  name: 'detailMovieIn1',
+                  builder: (context, state) {
+                    return DetailMovie(id: int.parse(state.params['id']!));
+                  },
+                )
+              ]),
+          GoRoute(
+              path: 'coming_full',
+              name: 'comingFull',
+              builder: (context, state) => const ComingFullMovie(),
+              routes: [
+                GoRoute(
+                  path: 'detail_movie/:id',
+                  name: 'detailMovieIn2',
+                  builder: (context, state) {
+                    return DetailMovie(id: int.parse(state.params['id']!));
+                  },
+                ),
+              ]),
+          GoRoute(
+            path: 'detail_movie/:id',
+            name: 'detailMovie',
+            builder: (context, state) {
+              return DetailMovie(id: int.parse(state.params['id']!));
+            },
+          ),
+        ]),
+  ], initialLocation: '/main_page');
 
   @override
   Widget build(BuildContext context) {
@@ -65,7 +103,6 @@ class _MyAppState extends State<MyApp> {
       routerDelegate: router.routerDelegate,
       theme: ThemeData(
         colorScheme: defaultColorScheme,
-        primarySwatch: Colors.blue,
       ),
     );
   }

@@ -2,6 +2,7 @@ import 'dart:developer';
 
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 
 import '../repository/repository.dart';
 import '../service/movie_service.dart';
@@ -29,7 +30,8 @@ class _CarouselState extends State<Carousel> {
                 items: (snapshot.data ?? [])
                     .map((e) => InkWell(
                           onTap: (() {
-                            log(e.id.toString());
+                            context.goNamed("detailMovie",
+                                params: {"id": e.id.toString()});
                           }),
                           child: Container(
                             margin: const EdgeInsets.fromLTRB(4, 0, 4, 8),
@@ -37,9 +39,12 @@ class _CarouselState extends State<Carousel> {
                             decoration: BoxDecoration(
                               color: Theme.of(context).colorScheme.secondary,
                               image: DecorationImage(
-                                image: NetworkImage(
-                                  '${MovieRepository.imageBaseURL}original/${(e.backdrop_path)}',
-                                ),
+                                image: e.poster_path != null
+                                    ? NetworkImage(
+                                        '${MovieRepository.imageBaseURL}original/${(e.backdrop_path)}')
+                                    : const AssetImage(
+                                            'assets/images/img_null.png')
+                                        as ImageProvider,
                                 fit: BoxFit.cover,
                               ),
                               borderRadius: const BorderRadius.all(
@@ -62,25 +67,25 @@ class _CarouselState extends State<Carousel> {
                 ),
                 carouselController: _carouselController,
               ),
-              // Row(
-              //   mainAxisAlignment: MainAxisAlignment.center,
-              //   children: List.generate(5, (index) {
-              //     return GestureDetector(
-              //       onTap: () => _carouselController.animateToPage(index),
-              //       child: Container(
-              //         width: 8,
-              //         height: 8,
-              //         margin: const EdgeInsets.symmetric(horizontal: 4),
-              //         decoration: BoxDecoration(
-              //           shape: BoxShape.circle,
-              //           color: _current == index
-              //               ? Theme.of(context).colorScheme.primary
-              //               : Theme.of(context).colorScheme.secondary,
-              //         ),
-              //       ),
-              //     );
-              //   }),
-              // ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: List.generate(5, (index) {
+                  return GestureDetector(
+                    onTap: () => _carouselController.animateToPage(index),
+                    child: Container(
+                      width: 8,
+                      height: 8,
+                      margin: const EdgeInsets.symmetric(horizontal: 4),
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        color: _current == index
+                            ? Theme.of(context).colorScheme.primary
+                            : Theme.of(context).colorScheme.secondary,
+                      ),
+                    ),
+                  );
+                }),
+              ),
             ],
           );
         } else {
