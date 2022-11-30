@@ -1,6 +1,11 @@
+import 'dart:developer';
+
 import 'package:email_validator/email_validator.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:movie_app_2072046/repository/auth.dart';
+import 'package:movie_app_2072046/repository/notif.dart';
 
 class Login extends StatefulWidget {
   @override
@@ -10,6 +15,24 @@ class Login extends StatefulWidget {
 class _LoginState extends State<Login> {
   final _formKey = GlobalKey<FormState>();
   var rememberValue = false;
+
+  //firebase
+  String? errorMessage = '';
+  bool isLogin = true;
+
+  final TextEditingController _controllerEmail = TextEditingController();
+  final TextEditingController _controllerPassword = TextEditingController();
+
+  Future<void> signInWithEmailAndPassword() async {
+    try {
+      await Auth().signInWithEmailAndPassword(
+          email: _controllerEmail.text, password: _controllerPassword.text);
+    } on FirebaseAuthException catch (e) {
+      setState(() {
+        errorMessage = e.message;
+      });
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -38,6 +61,7 @@ class _LoginState extends State<Login> {
                   child: Column(
                     children: [
                       TextFormField(
+                        controller: _controllerEmail,
                         validator: (value) => EmailValidator.validate(value!)
                             ? null
                             : "Masukan email anda",
@@ -54,6 +78,7 @@ class _LoginState extends State<Login> {
                         height: 20,
                       ),
                       TextFormField(
+                        controller: _controllerPassword,
                         validator: (value) {
                           if (value == null || value.isEmpty) {
                             return 'Masukan password anda';
@@ -92,9 +117,32 @@ class _LoginState extends State<Login> {
                         height: 20,
                       ),
                       ElevatedButton(
-                        onPressed: () {
+                        onPressed: () async {
                           if (_formKey.currentState!.validate()) {
-                            context.goNamed('main');
+                            showDialog(
+                                context: context,
+                                barrierDismissible: false,
+                                builder: (context) => Center(
+                                        child: CircularProgressIndicator(
+                                      color: Theme.of(context).primaryColor,
+                                    )));
+
+                            try {
+                              await FirebaseAuth.instance
+                                  .signInWithEmailAndPassword(
+                                      email: _controllerEmail.text.trim(),
+                                      password:
+                                          _controllerPassword.text.trim());
+
+                              Navigator.of(context, rootNavigator: true).pop();
+
+                              context.goNamed('main');
+                            } on FirebaseAuthException catch (e) {
+                              Navigator.of(context, rootNavigator: true).pop();
+
+                              Notif.showSnackBar(e.message);
+                              FocusManager.instance.primaryFocus?.unfocus();
+                            }
                           }
                         },
                         style: ElevatedButton.styleFrom(

@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
@@ -24,7 +25,8 @@ class _HomePageState extends State<HomePage> {
         ),
         centerTitle: true,
         leading: TextButton(
-          onPressed: () {
+          onPressed: () async {
+            await FirebaseAuth.instance.signOut();
             context.goNamed('signIn');
           },
           child: const Icon(

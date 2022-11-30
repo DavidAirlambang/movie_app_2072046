@@ -1,6 +1,10 @@
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:go_router/go_router.dart';
+import 'package:movie_app_2072046/repository/auth.dart';
+import 'package:movie_app_2072046/repository/notif.dart';
 import 'package:movie_app_2072046/view/coming_full.dart';
 import 'package:movie_app_2072046/view/detail_movie.dart';
 import 'package:movie_app_2072046/view/login_page.dart';
@@ -8,7 +12,9 @@ import 'package:movie_app_2072046/view/main_page.dart';
 import 'package:movie_app_2072046/view/playing_full.dart';
 import 'package:movie_app_2072046/view/sign_up_page.dart';
 
-void main() {
+Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp();
   runApp(MyApp());
 }
 
@@ -28,6 +34,13 @@ ColorScheme defaultColorScheme = const ColorScheme(
 
 class MyApp extends StatefulWidget {
   MyApp({Key? key}) : super(key: key);
+
+  // firebase
+  final User? user = Auth().currentUser;
+  // signOut or S
+  Future<void> SignOut() async {
+    await Auth().SignOut();
+  }
 
   @override
   State<MyApp> createState() => _MyAppState();
@@ -92,7 +105,7 @@ class _MyAppState extends State<MyApp> {
             },
           ),
         ]),
-  ], initialLocation: '/main_page');
+  ], initialLocation: '/signIn');
 
   @override
   Widget build(BuildContext context) {
@@ -101,6 +114,7 @@ class _MyAppState extends State<MyApp> {
       routeInformationParser: router.routeInformationParser,
       routeInformationProvider: router.routeInformationProvider,
       routerDelegate: router.routerDelegate,
+      scaffoldMessengerKey: Notif.messengerKey,
       theme: ThemeData(
         colorScheme: defaultColorScheme,
       ),

@@ -16,12 +16,10 @@ class MoviePoster extends StatelessWidget {
         borderRadius: BorderRadius.circular(10),
         image: DecorationImage(
             image: NetworkImage(
-              '${MovieRepository.imageBaseURL}original/${path}',
+              '${MovieRepository.imageBaseURL}w500/${path}',
             ),
             fit: BoxFit.cover),
       ),
     );
   }
 }
-
-

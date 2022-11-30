@@ -10,8 +10,6 @@ class DetailMovie extends StatelessWidget {
   final int id;
   const DetailMovie({super.key, required this.id});
 
-// MoviePoster(path: snapshot.data!.poster_path!)
-
   @override
   Widget build(BuildContext context) {
     List genres = [];
@@ -35,10 +33,7 @@ class DetailMovie extends StatelessWidget {
             length = snapshot.data!.genres!.length;
             for (var element in snapshot.data!.genres!) {
               genres.add(element['name']);
-              log(element["name"].toString());
             }
-            log(genres.take(length).toString());
-            log(length.toString());
             return Container(
               color: Theme.of(context).colorScheme.background,
               child: ListView(
@@ -55,9 +50,12 @@ class DetailMovie extends StatelessWidget {
                               color: Theme.of(context).colorScheme.secondary,
                             ),
                             child: Image(
-                              image: NetworkImage(
-                                '${MovieRepository.imageBaseURL}original/${snapshot.data?.backdrop_path}',
-                              ),
+                              image: snapshot.data!.backdrop_path != null
+                                  ? NetworkImage(
+                                      '${MovieRepository.imageBaseURL}original/${(snapshot.data!.backdrop_path)}')
+                                  : NetworkImage(
+                                          '${MovieRepository.imageBaseURL}original/${(snapshot.data!.poster_path)}')
+                                      as ImageProvider,
                               width: double.infinity,
                               fit: BoxFit.cover,
                             ),
@@ -158,20 +156,15 @@ class DetailMovie extends StatelessWidget {
                                         ),
                                         const Spacer(),
                                         Text(
-                                          snapshot.data!.vote_average!
-                                                  .toString()
-                                                  .substring(0, 3) +
-                                              "/10",
+                                          "${snapshot.data!.vote_average!.toString().substring(0, 3)}/10",
                                           style: const TextStyle(
                                               fontSize: 18,
                                               fontWeight: FontWeight.bold),
                                         )
                                       ]),
                                     ),
-                                    boxInfo(
-                                        "Run Time",
-                                        snapshot.data!.runtime.toString() +
-                                            " Min"),
+                                    boxInfo("Run Time",
+                                        "${snapshot.data!.runtime} Min"),
                                     boxInfo("Status",
                                         snapshot.data!.status.toString())
                                   ],
@@ -212,7 +205,17 @@ class DetailMovie extends StatelessWidget {
               ),
             );
           } else {
-            return Text(id.toString());
+            return Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Center(
+                  child: CircularProgressIndicator(
+                    color: Theme.of(context).colorScheme.primary,
+                  ),
+                )
+              ],
+            );
           }
         },
       ),

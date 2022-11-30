@@ -39,11 +39,11 @@ class _CarouselState extends State<Carousel> {
                             decoration: BoxDecoration(
                               color: Theme.of(context).colorScheme.secondary,
                               image: DecorationImage(
-                                image: e.poster_path != null
+                                image: e.backdrop_path != null
                                     ? NetworkImage(
-                                        '${MovieRepository.imageBaseURL}original/${(e.backdrop_path)}')
-                                    : const AssetImage(
-                                            'assets/images/img_null.png')
+                                        '${MovieRepository.imageBaseURL}w500/${(e.backdrop_path)}')
+                                    : NetworkImage(
+                                            '${MovieRepository.imageBaseURL}w500/${(e.poster_path)}')
                                         as ImageProvider,
                                 fit: BoxFit.cover,
                               ),

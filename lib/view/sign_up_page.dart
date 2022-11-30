@@ -1,6 +1,13 @@
+import 'dart:developer';
+
 import 'package:email_validator/email_validator.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+
+import '../repository/notif.dart';
+
+// import '../repository/auth.dart';
 
 class SignUp extends StatefulWidget {
   final String title;
@@ -13,6 +20,17 @@ class SignUp extends StatefulWidget {
 class _SignUpState extends State<SignUp> {
   final _formKey = GlobalKey<FormState>();
   var rememberValue = false;
+
+  // firebase
+  String? errorMessage = '';
+  bool isLogin = true;
+
+  // final TextEditingController _controllerDepan = TextEditingController();
+  // final TextEditingController _controllerBelakang = TextEditingController();
+  final TextEditingController _controllerEmail = TextEditingController();
+  final TextEditingController _controllerPassword = TextEditingController();
+  final TextEditingController _controllerPasswordConfirmation =
+      TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -39,51 +57,53 @@ class _SignUpState extends State<SignUp> {
                   key: _formKey,
                   child: Column(
                     children: [
-                      Row(
-                        children: [
-                          Expanded(
-                            child: TextFormField(
-                              validator: (value) {
-                                if (value == null || value.isEmpty) {
-                                  return 'Field masih kosong';
-                                }
-                                return null;
-                              },
-                              maxLines: 1,
-                              decoration: InputDecoration(
-                                hintText: 'Nama Depan',
-                                prefixIcon: const Icon(Icons.person),
-                                border: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(10),
-                                ),
-                              ),
-                            ),
-                          ),
-                          const SizedBox(
-                            width: 20,
-                          ),
-                          Expanded(
-                            child: TextFormField(
-                              validator: (value) {
-                                if (value == null || value.isEmpty) {
-                                  return 'Field masih kosong';
-                                }
-                                return null;
-                              },
-                              maxLines: 1,
-                              decoration: InputDecoration(
-                                hintText: 'Belakang',
-                                prefixIcon: const Icon(Icons.person),
-                                border: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(10),
-                                ),
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                      SizedBox(height: 20),
+                      // Row(
+                      //   children: [
+                      //     Expanded(
+                      //       child: TextFormField(
+                      //         controller: _controllerDepan,
+                      //         validator: (value) {
+                      //           if (value == null || value.isEmpty) {
+                      //             return 'Field masih kosong';
+                      //           }
+                      //           return null;
+                      //         },
+                      //         maxLines: 1,
+                      //         decoration: InputDecoration(
+                      //           hintText: 'Nama Depan',
+                      //           prefixIcon: const Icon(Icons.person),
+                      //           border: OutlineInputBorder(
+                      //             borderRadius: BorderRadius.circular(10),
+                      //           ),
+                      //         ),
+                      //       ),
+                      //     ),
+                      //     const SizedBox(
+                      //       width: 20,
+                      //     ),
+                      //     Expanded(
+                      //       child: TextFormField(
+                      //         controller: _controllerBelakang,
+                      //         validator: (value) {
+                      //           if (value == null || value.isEmpty) {
+                      //             return 'Field masih kosong';
+                      //           }
+                      //           return null;
+                      //         },
+                      //         maxLines: 1,
+                      //         decoration: InputDecoration(
+                      //           hintText: 'Belakang',
+                      //           prefixIcon: const Icon(Icons.person),
+                      //           border: OutlineInputBorder(
+                      //             borderRadius: BorderRadius.circular(10),
+                      //           ),
+                      //         ),
+                      //       ),
+                      //     ),
+                      //   ],
+                      // ),
                       TextFormField(
+                        controller: _controllerEmail,
                         validator: (value) => EmailValidator.validate(value!)
                             ? null
                             : "Masukan email anda",
@@ -100,6 +120,7 @@ class _SignUpState extends State<SignUp> {
                         height: 20,
                       ),
                       TextFormField(
+                        controller: _controllerPassword,
                         validator: (value) {
                           if (value == null || value.isEmpty) {
                             return 'Masukan password anda';
@@ -119,10 +140,55 @@ class _SignUpState extends State<SignUp> {
                       const SizedBox(
                         height: 20,
                       ),
+                      TextFormField(
+                        controller: _controllerPasswordConfirmation,
+                        validator: (value) {
+                          if (value == null ||
+                              value.isEmpty ||
+                              value != _controllerPassword.text) {
+                            return 'Password tidak sesuai';
+                          }
+                          return null;
+                        },
+                        maxLines: 1,
+                        obscureText: true,
+                        decoration: InputDecoration(
+                          prefixIcon: const Icon(Icons.lock),
+                          hintText: 'Konfirmasi password anda',
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                        ),
+                      ),
+                      const SizedBox(
+                        height: 20,
+                      ),
                       ElevatedButton(
-                        onPressed: () {
+                        onPressed: () async {
                           if (_formKey.currentState!.validate()) {
-                            context.goNamed("main");
+                            showDialog(
+                                context: context,
+                                barrierDismissible: false,
+                                builder: (context) => Center(
+                                        child: CircularProgressIndicator(
+                                      color: Theme.of(context).primaryColor,
+                                    )));
+
+                            try {
+                              await FirebaseAuth.instance
+                                  .createUserWithEmailAndPassword(
+                                      email: _controllerEmail.text,
+                                      password: _controllerPassword.text);
+
+                              Navigator.of(context, rootNavigator: true).pop();
+
+                              context.goNamed("main");
+                            } on FirebaseAuthException catch (e) {
+                              Navigator.of(context, rootNavigator: true).pop();
+
+                              Notif.showSnackBar(e.message);
+                              FocusManager.instance.primaryFocus?.unfocus();
+                            }
                           }
                         },
                         style: ElevatedButton.styleFrom(
@@ -145,7 +211,7 @@ class _SignUpState extends State<SignUp> {
                             style: TextStyle(color: Colors.white),
                           ),
                           TextButton(
-                            onPressed: () {
+                            onPressed: () async {
                               context.goNamed('signIn');
                             },
                             child: const Text('Sign In disini'),

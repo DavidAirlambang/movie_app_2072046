@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "812722195110",
+    "project_id": "fir-auth-13c0f",
+    "storage_bucket": "fir-auth-13c0f.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:812722195110:android:a99e66eaf6f48714384267",
+        "android_client_info": {
+          "package_name": "com.davidAirlambang.movie_app_2072046"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "812722195110-n3dgtoek7th71dp80lio36d2au40qeue.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.davidAirlambang.movie_app_2072046",
+            "certificate_hash": "ca04cdbaad02b07a00bbe6ce463b1ebd84a0d929"
+          }
+        },
+        {
+          "client_id": "812722195110-ei8c1imi9stn4sc40d05p7rhnue8h46a.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyComFOwHcOX1XLwcOuyaZPWQXlhRt4w6ow"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "812722195110-ei8c1imi9stn4sc40d05p7rhnue8h46a.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
