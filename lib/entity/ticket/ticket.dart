@@ -6,7 +6,11 @@ part 'ticket.g.dart';
 @freezed
 class Ticket with _$Ticket {
   const factory Ticket(
-      {String? judul, String? jam, DateTime? tanggal, List? kursi}) = _Ticket;
+      {String? ticketId,
+      int? movId,
+      String? jam,
+      DateTime? tanggal,
+      List? kursi}) = _Ticket;
 
   factory Ticket.fromJson(Map<String, dynamic> json) => _$TicketFromJson(json);
 }

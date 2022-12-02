@@ -106,12 +106,12 @@ class _MyAppState extends State<MyApp> {
               },
               routes: [
                 GoRoute(
-                  path: 'seats/:idMov/:time',
+                  path: 'seats/:idMov',
                   name: 'seats',
                   builder: (context, state) {
                     return Seats(
-                        idMov: int.parse(state.params['idMov']!),
-                        timePilihan: spiltTime(state.params['time']));
+                      idMov: int.parse(state.params['idMov']!),
+                    );
                   },
                 ),
               ]),

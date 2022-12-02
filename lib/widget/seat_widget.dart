@@ -1,8 +1,11 @@
 import 'dart:developer';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class SeatWidget extends StatefulWidget {
+final kursiProvider = StateProvider.autoDispose<List>((ref) => []);
+
+class SeatWidget extends ConsumerStatefulWidget {
   bool isReserved;
   bool isSelected;
   final String kode;
@@ -15,18 +18,24 @@ class SeatWidget extends StatefulWidget {
       : super(key: key);
 
   @override
-  _SeatWidgetState createState() => _SeatWidgetState();
+  ConsumerState createState() => _SeatWidgetState();
 }
 
-class _SeatWidgetState extends State<SeatWidget> {
+class _SeatWidgetState extends ConsumerState<SeatWidget> {
   @override
   Widget build(BuildContext context) {
+    List sementara = ref.read(kursiProvider.notifier).state;
+
     return InkWell(
       splashColor: Colors.transparent,
       highlightColor: Colors.transparent,
       onTap: () {
         setState(() {
-          log(widget.kode);
+          sementara.contains(widget.kode)
+              ? sementara.removeWhere((element) => element == widget.kode)
+              : sementara.add(widget.kode);
+
+          log(sementara.toString());
           !widget.isReserved ? widget.isSelected = !widget.isSelected : null;
         });
       },

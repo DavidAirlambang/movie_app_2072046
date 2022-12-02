@@ -7,7 +7,8 @@ part of 'ticket.dart';
 // **************************************************************************
 
 _$_Ticket _$$_TicketFromJson(Map<String, dynamic> json) => _$_Ticket(
-      judul: json['judul'] as String?,
+      ticketId: json['ticketId'] as String?,
+      movId: json['movId'] as int?,
       jam: json['jam'] as String?,
       tanggal: json['tanggal'] == null
           ? null
@@ -16,7 +17,8 @@ _$_Ticket _$$_TicketFromJson(Map<String, dynamic> json) => _$_Ticket(
     );
 
 Map<String, dynamic> _$$_TicketToJson(_$_Ticket instance) => <String, dynamic>{
-      'judul': instance.judul,
+      'ticketId': instance.ticketId,
+      'movId': instance.movId,
       'jam': instance.jam,
       'tanggal': instance.tanggal?.toIso8601String(),
       'kursi': instance.kursi,

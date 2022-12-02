@@ -1,22 +1,34 @@
 import 'dart:developer';
 
 import 'package:calendar_timeline/calendar_timeline.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:movie_app_2072046/entity/detail/detail.dart';
+import 'package:movie_app_2072046/service/movie_service.dart';
+import 'package:movie_app_2072046/view/movies/detail_movie.dart';
 import 'package:movie_app_2072046/widget/seat_widget.dart';
 import 'package:movie_app_2072046/widget/time_widget.dart';
 
-class Seats extends StatefulWidget {
+import '../../entity/ticket/ticket.dart';
+
+class Seats extends ConsumerStatefulWidget {
   final int idMov;
-  final TimeOfDay timePilihan;
-  const Seats({super.key, required this.idMov, required this.timePilihan});
+  const Seats({super.key, required this.idMov});
 
   @override
-  State<Seats> createState() => _SeatsState();
+  ConsumerState<Seats> createState() => _SeatsState();
 }
 
-class _SeatsState extends State<Seats> {
+class _SeatsState extends ConsumerState<Seats> {
+  MovieDetail? _movieDetail;
+
   @override
   Widget build(BuildContext context) {
+    // riverpod
+    String? jamPilihan = ref.watch(jamProvider);
+    List? kursiPilihan = ref.watch(kursiProvider);
+
     List<TimeOfDay> listTime = [
       const TimeOfDay(hour: 12, minute: 20),
       const TimeOfDay(hour: 13, minute: 20),
@@ -24,26 +36,51 @@ class _SeatsState extends State<Seats> {
       const TimeOfDay(hour: 15, minute: 20),
     ];
 
-    final ambilIndex = listTime.indexOf(widget.timePilihan);
-    log(ambilIndex.toString());
-
     DateTime datePilihan = DateTime.now();
 
-    bool isReserved = false;
+    Future addTicket() async {
+      final docTicket = FirebaseFirestore.instance.collection('tickets').doc();
 
-    bool isSelected = false;
+      final ticket = Ticket(
+          ticketId: docTicket.id,
+          movId: widget.idMov,
+          tanggal: datePilihan,
+          jam: jamPilihan,
+          kursi: kursiPilihan);
+
+      final json = ticket.toJson();
+
+      await docTicket
+          .set(json)
+          .then((value) => log("berhasil"))
+          .catchError((err) => log("gagal"));
+    }
 
     return Scaffold(
       backgroundColor: Theme.of(context).colorScheme.background,
       appBar: AppBar(
+        iconTheme: const IconThemeData(color: Color(0xFFf4C10F)),
         elevation: 0,
         backgroundColor: Theme.of(context).colorScheme.background,
         centerTitle: true,
         automaticallyImplyLeading: true,
         // ganti title
-        title: Text(widget.idMov.toString()),
+        title: FutureBuilder(
+          future: MovieService().getMovieDetail(widget.idMov),
+          builder: (context, snapshot) {
+            if (snapshot.hasData) {
+              return Text(
+                snapshot.data!.title!,
+                style: const TextStyle(color: Color(0xFFf4C10F), fontSize: 20),
+              );
+            } else {
+              return const Text("...");
+            }
+          },
+        ),
       ),
       body: ListView(children: [
+        const SizedBox(height: 10),
         //tanggal
         CalendarTimeline(
           initialDate: DateTime.now(),
@@ -61,14 +98,13 @@ class _SeatsState extends State<Seats> {
           dotsColor: Theme.of(context).colorScheme.primary,
           locale: 'en_ISO',
         ),
-        const SizedBox(height: 5),
+        const SizedBox(height: 10),
         SizedBox(
           height: 80,
           // jam
-          child: TimeWidget(
-              times: listTime, id: widget.idMov, pilihan: ambilIndex),
+          child: TimeWidget(times: listTime, id: widget.idMov),
         ),
-        const SizedBox(height: 10),
+        const SizedBox(height: 15),
         // kursi
         Container(
             margin: const EdgeInsets.only(right: 15),
@@ -116,8 +152,11 @@ class _SeatsState extends State<Seats> {
         color: Theme.of(context).colorScheme.background,
         child: ElevatedButton(
           onPressed: () {
+            log(widget.idMov.toString());
             log(datePilihan.toString());
-            log(widget.timePilihan.toString());
+            log(jamPilihan.toString());
+            log(kursiPilihan.toString());
+            addTicket();
           },
           style: ElevatedButton.styleFrom(
             backgroundColor: Theme.of(context).colorScheme.primary,

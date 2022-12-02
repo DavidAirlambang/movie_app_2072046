@@ -1,27 +1,24 @@
 import 'dart:developer';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
-class TimeWidget extends StatefulWidget {
+final jamProvider = StateProvider<String?>((ref) => null);
+
+class TimeWidget extends ConsumerStatefulWidget {
   final List<TimeOfDay> times;
   int? id;
-  int? pilihan;
 
-  TimeWidget({Key? key, required this.times, required this.id, this.pilihan})
+  TimeWidget({Key? key, required this.times, required this.id})
       : super(key: key);
 
   @override
-  _TimeWidgetState createState() => _TimeWidgetState();
+  ConsumerState<TimeWidget> createState() => _TimeWidgetState();
 }
 
-class _TimeWidgetState extends State<TimeWidget> {
-  int? selected;
-
-  @override
-  void initState() {
-    selected = widget.pilihan;
-  }
+class _TimeWidgetState extends ConsumerState<TimeWidget> {
+  int? selected = -1;
 
   @override
   Widget build(BuildContext context) {
@@ -36,14 +33,8 @@ class _TimeWidgetState extends State<TimeWidget> {
               onTap: () {
                 setState(() {
                   selected = index;
-                  context.pushNamed("seats", params: {
-                    "id": widget.id.toString(),
-                    "idMov": widget.id.toString(),
-                    "time": TimeOfDay(
-                            hour: widget.times[index].hour,
-                            minute: widget.times[index].minute)
-                        .toString()
-                  });
+                  ref.read(jamProvider.notifier).state =
+                      "${widget.times[index].hour.toString().padLeft(2, '0')}:${widget.times[index].minute.toString().padLeft(2, '0')}";
                 });
               },
               child: Container(

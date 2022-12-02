@@ -5,7 +5,6 @@ import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:movie_app_2072046/service/movie_service.dart';
-import 'package:movie_app_2072046/service/ticket_service.dart';
 import 'package:movie_app_2072046/widget/movie_poster.dart';
 
 import '../../repository/repository.dart';
@@ -16,13 +15,14 @@ class DetailMovie extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    ref.read(movieProvider).getMovieDetail(id);
     List genres = [];
     int length = 0;
 
     // riverpod
-    String poster = ref.read(posterProvider.notifier).state;
-    final judul = ref.watch(judulProvider.notifier);
-    String test;
+    // String poster = ref.read(posterProvider.notifier).state;
+    // final judul = ref.watch(judulProvider.notifier);
+    // String test;
 
     //statusbar
     SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
@@ -42,10 +42,7 @@ class DetailMovie extends ConsumerWidget {
           if (snapshot.hasData) {
             length = snapshot.data!.genres!.length;
             // judul.state = snapshot.data!.title!;
-            log(judul.toString());
-
-            '${MovieRepository.imageBaseURL}original/${(snapshot.data!.poster_path)}';
-            log(poster);
+            // log(poster);
 
             for (var element in snapshot.data!.genres!) {
               genres.add(element['name']);
@@ -243,7 +240,6 @@ class DetailMovie extends ConsumerWidget {
             context.pushNamed("seats", params: {
               "id": id.toString(),
               "idMov": id.toString(),
-              "time": TimeOfDay(hour: 12, minute: 20).toString()
             });
           },
           style: ElevatedButton.styleFrom(
