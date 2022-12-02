@@ -1,5 +1,6 @@
 import 'dart:developer';
 import 'package:dio/dio.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:movie_app_2072046/entity/coming/coming.dart';
 import 'package:movie_app_2072046/entity/detail/detail.dart';
 import 'package:movie_app_2072046/entity/popular/popular.dart';
@@ -81,7 +82,7 @@ class MovieService {
     try {
       var result = await dio.get(url);
 
-      log((result.data).toString());
+      // log((result.data).toString());
 
       MovieDetail movieDetail = MovieDetail.fromJson(result.data);
       return movieDetail;
@@ -93,3 +94,7 @@ class MovieService {
 
   //end
 }
+
+final movieProvider = Provider((ref) => MovieService());
+
+

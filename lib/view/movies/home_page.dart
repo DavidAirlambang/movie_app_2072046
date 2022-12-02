@@ -2,9 +2,9 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
-import '../widget/carousel_widget.dart';
-import '../widget/coming_widget.dart';
-import '../widget/playing_widget.dart';
+import '../../widget/carousel_widget.dart';
+import '../../widget/coming_widget.dart';
+import '../../widget/playing_widget.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});

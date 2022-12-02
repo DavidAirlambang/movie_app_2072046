@@ -1,19 +1,29 @@
 import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import 'package:movie_app_2072046/service/movie_service.dart';
+import 'package:movie_app_2072046/service/ticket_service.dart';
 import 'package:movie_app_2072046/widget/movie_poster.dart';
 
-import '../repository/repository.dart';
+import '../../repository/repository.dart';
 
-class DetailMovie extends StatelessWidget {
+class DetailMovie extends ConsumerWidget {
   final int id;
   const DetailMovie({super.key, required this.id});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     List genres = [];
     int length = 0;
+
+    // riverpod
+    String poster = ref.read(posterProvider.notifier).state;
+    final judul = ref.watch(judulProvider.notifier);
+    String test;
+
     //statusbar
     SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
       statusBarColor: Colors.transparent,
@@ -31,6 +41,12 @@ class DetailMovie extends StatelessWidget {
         builder: (context, snapshot) {
           if (snapshot.hasData) {
             length = snapshot.data!.genres!.length;
+            // judul.state = snapshot.data!.title!;
+            log(judul.toString());
+
+            '${MovieRepository.imageBaseURL}original/${(snapshot.data!.poster_path)}';
+            log(poster);
+
             for (var element in snapshot.data!.genres!) {
               genres.add(element['name']);
             }
@@ -75,7 +91,7 @@ class DetailMovie extends StatelessWidget {
                                       crossAxisAlignment:
                                           CrossAxisAlignment.start,
                                       children: [
-                                        Container(
+                                        SizedBox(
                                           width: 200,
                                           child: Text(
                                             snapshot.data!.title!,
@@ -223,7 +239,13 @@ class DetailMovie extends StatelessWidget {
         padding: const EdgeInsets.fromLTRB(16, 16, 20, 25),
         color: Theme.of(context).colorScheme.background,
         child: ElevatedButton(
-          onPressed: () {},
+          onPressed: () {
+            context.pushNamed("seats", params: {
+              "id": id.toString(),
+              "idMov": id.toString(),
+              "time": TimeOfDay(hour: 12, minute: 20).toString()
+            });
+          },
           style: ElevatedButton.styleFrom(
             backgroundColor: Theme.of(context).colorScheme.primary,
             padding: const EdgeInsets.symmetric(vertical: 12),

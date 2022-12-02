@@ -4,37 +4,28 @@ import 'package:email_validator/email_validator.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:movie_app_2072046/repository/notif.dart';
 
-import '../repository/notif.dart';
-
-// import '../repository/auth.dart';
-
-class SignUp extends StatefulWidget {
-  final String title;
-  const SignUp({Key? key, required this.title}) : super(key: key);
-
+class Login extends StatefulWidget {
   @override
-  State<SignUp> createState() => _SignUpState();
+  State<Login> createState() => _LoginState();
 }
 
-class _SignUpState extends State<SignUp> {
+class _LoginState extends State<Login> {
   final _formKey = GlobalKey<FormState>();
   var rememberValue = false;
 
-  // firebase
+  //firebase
   String? errorMessage = '';
   bool isLogin = true;
 
-  // final TextEditingController _controllerDepan = TextEditingController();
-  // final TextEditingController _controllerBelakang = TextEditingController();
   final TextEditingController _controllerEmail = TextEditingController();
   final TextEditingController _controllerPassword = TextEditingController();
-  final TextEditingController _controllerPasswordConfirmation =
-      TextEditingController();
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      // resize -> biar waktu keluar keyboard gk overflow
       resizeToAvoidBottomInset: false,
       backgroundColor: Theme.of(context).colorScheme.background,
       body: Container(
@@ -44,7 +35,7 @@ class _SignUpState extends State<SignUp> {
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               const Text(
-                "Sign Up",
+                "Sign In",
                 style: TextStyle(
                   fontWeight: FontWeight.bold,
                   fontSize: 40,
@@ -57,51 +48,6 @@ class _SignUpState extends State<SignUp> {
                   key: _formKey,
                   child: Column(
                     children: [
-                      // Row(
-                      //   children: [
-                      //     Expanded(
-                      //       child: TextFormField(
-                      //         controller: _controllerDepan,
-                      //         validator: (value) {
-                      //           if (value == null || value.isEmpty) {
-                      //             return 'Field masih kosong';
-                      //           }
-                      //           return null;
-                      //         },
-                      //         maxLines: 1,
-                      //         decoration: InputDecoration(
-                      //           hintText: 'Nama Depan',
-                      //           prefixIcon: const Icon(Icons.person),
-                      //           border: OutlineInputBorder(
-                      //             borderRadius: BorderRadius.circular(10),
-                      //           ),
-                      //         ),
-                      //       ),
-                      //     ),
-                      //     const SizedBox(
-                      //       width: 20,
-                      //     ),
-                      //     Expanded(
-                      //       child: TextFormField(
-                      //         controller: _controllerBelakang,
-                      //         validator: (value) {
-                      //           if (value == null || value.isEmpty) {
-                      //             return 'Field masih kosong';
-                      //           }
-                      //           return null;
-                      //         },
-                      //         maxLines: 1,
-                      //         decoration: InputDecoration(
-                      //           hintText: 'Belakang',
-                      //           prefixIcon: const Icon(Icons.person),
-                      //           border: OutlineInputBorder(
-                      //             borderRadius: BorderRadius.circular(10),
-                      //           ),
-                      //         ),
-                      //       ),
-                      //     ),
-                      //   ],
-                      // ),
                       TextFormField(
                         controller: _controllerEmail,
                         validator: (value) => EmailValidator.validate(value!)
@@ -140,25 +86,20 @@ class _SignUpState extends State<SignUp> {
                       const SizedBox(
                         height: 20,
                       ),
-                      TextFormField(
-                        controller: _controllerPasswordConfirmation,
-                        validator: (value) {
-                          if (value == null ||
-                              value.isEmpty ||
-                              value != _controllerPassword.text) {
-                            return 'Password tidak sesuai';
-                          }
-                          return null;
-                        },
-                        maxLines: 1,
-                        obscureText: true,
-                        decoration: InputDecoration(
-                          prefixIcon: const Icon(Icons.lock),
-                          hintText: 'Konfirmasi password anda',
-                          border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(10),
-                          ),
+                      CheckboxListTile(
+                        title: const Text(
+                          "Remember me",
+                          style: TextStyle(color: Colors.white),
                         ),
+                        contentPadding: EdgeInsets.zero,
+                        value: rememberValue,
+                        activeColor: Theme.of(context).colorScheme.primary,
+                        onChanged: (newValue) {
+                          setState(() {
+                            rememberValue = newValue!;
+                          });
+                        },
+                        controlAffinity: ListTileControlAffinity.leading,
                       ),
                       const SizedBox(
                         height: 20,
@@ -176,13 +117,14 @@ class _SignUpState extends State<SignUp> {
 
                             try {
                               await FirebaseAuth.instance
-                                  .createUserWithEmailAndPassword(
-                                      email: _controllerEmail.text,
-                                      password: _controllerPassword.text);
+                                  .signInWithEmailAndPassword(
+                                      email: _controllerEmail.text.trim(),
+                                      password:
+                                          _controllerPassword.text.trim());
 
                               Navigator.of(context, rootNavigator: true).pop();
 
-                              context.goNamed("main");
+                              context.goNamed('main');
                             } on FirebaseAuthException catch (e) {
                               Navigator.of(context, rootNavigator: true).pop();
 
@@ -195,7 +137,7 @@ class _SignUpState extends State<SignUp> {
                           padding: const EdgeInsets.fromLTRB(40, 15, 40, 15),
                         ),
                         child: const Text(
-                          'Sign Up',
+                          'Sign In',
                           style: TextStyle(
                               fontWeight: FontWeight.bold, color: Colors.white),
                         ),
@@ -207,20 +149,20 @@ class _SignUpState extends State<SignUp> {
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           const Text(
-                            'Sudah punya akun?',
+                            'Belum ada akun?',
                             style: TextStyle(color: Colors.white),
                           ),
                           TextButton(
-                            onPressed: () async {
-                              context.goNamed('signIn');
+                            onPressed: () {
+                              context.goNamed('signUp');
                             },
-                            child: const Text('Sign In disini'),
+                            child: const Text('Buat disini'),
                           ),
                         ],
                       ),
-                    ],
+                    ],                                                                                                                                                                                                                                                                                                                                                              
                   ))
-            ],
+            ],                            
           )),
     );
   }

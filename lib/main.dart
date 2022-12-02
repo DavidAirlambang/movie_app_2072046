@@ -1,21 +1,22 @@
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:movie_app_2072046/repository/auth.dart';
 import 'package:movie_app_2072046/repository/notif.dart';
-import 'package:movie_app_2072046/view/coming_full.dart';
-import 'package:movie_app_2072046/view/detail_movie.dart';
-import 'package:movie_app_2072046/view/login_page.dart';
+import 'package:movie_app_2072046/view/login_signUp/login_page.dart';
+
 import 'package:movie_app_2072046/view/main_page.dart';
-import 'package:movie_app_2072046/view/playing_full.dart';
-import 'package:movie_app_2072046/view/sign_up_page.dart';
+import 'package:movie_app_2072046/view/movies/coming_full.dart';
+import 'package:movie_app_2072046/view/movies/detail_movie.dart';
+import 'package:movie_app_2072046/view/movies/playing_full.dart';
+import 'package:movie_app_2072046/view/movies/seat.dart';
+import 'package:movie_app_2072046/view/login_signUp/sign_up_page.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
-  runApp(MyApp());
+  runApp(ProviderScope(child: MyApp()));
 }
 
 ColorScheme defaultColorScheme = const ColorScheme(
@@ -35,18 +36,19 @@ ColorScheme defaultColorScheme = const ColorScheme(
 class MyApp extends StatefulWidget {
   MyApp({Key? key}) : super(key: key);
 
-  // firebase
-  final User? user = Auth().currentUser;
-  // signOut or S
-  Future<void> SignOut() async {
-    await Auth().SignOut();
-  }
-
   @override
   State<MyApp> createState() => _MyAppState();
 }
 
 class _MyAppState extends State<MyApp> {
+  static TimeOfDay spiltTime(time) {
+    time = time.split("(")[1].split(")")[0];
+    time = TimeOfDay(
+        hour: int.parse(time.split(":")[0]),
+        minute: int.parse(time.split(":")[1]));
+    return time;
+  }
+
   @override
   void initState() {
     SystemChrome.setEnabledSystemUIMode(SystemUiMode.manual,
@@ -77,12 +79,11 @@ class _MyAppState extends State<MyApp> {
               builder: (context, state) => const PlayingFullMovie(),
               routes: [
                 GoRoute(
-                  path: 'detail_movie/:id',
-                  name: 'detailMovieIn1',
-                  builder: (context, state) {
-                    return DetailMovie(id: int.parse(state.params['id']!));
-                  },
-                )
+                    path: 'detail_movie/:id',
+                    name: 'detailMovieIn1',
+                    builder: (context, state) {
+                      return DetailMovie(id: int.parse(state.params['id']!));
+                    })
               ]),
           GoRoute(
               path: 'coming_full',
@@ -98,14 +99,24 @@ class _MyAppState extends State<MyApp> {
                 ),
               ]),
           GoRoute(
-            path: 'detail_movie/:id',
-            name: 'detailMovie',
-            builder: (context, state) {
-              return DetailMovie(id: int.parse(state.params['id']!));
-            },
-          ),
+              path: 'detail_movie/:id',
+              name: 'detailMovie',
+              builder: (context, state) {
+                return DetailMovie(id: int.parse(state.params['id']!));
+              },
+              routes: [
+                GoRoute(
+                  path: 'seats/:idMov/:time',
+                  name: 'seats',
+                  builder: (context, state) {
+                    return Seats(
+                        idMov: int.parse(state.params['idMov']!),
+                        timePilihan: spiltTime(state.params['time']));
+                  },
+                ),
+              ]),
         ]),
-  ], initialLocation: '/signIn');
+  ], initialLocation: '/main_page');
 
   @override
   Widget build(BuildContext context) {

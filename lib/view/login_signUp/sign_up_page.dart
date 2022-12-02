@@ -1,43 +1,34 @@
-import 'dart:developer';
-
 import 'package:email_validator/email_validator.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:movie_app_2072046/repository/auth.dart';
-import 'package:movie_app_2072046/repository/notif.dart';
 
-class Login extends StatefulWidget {
+import '../../repository/notif.dart';
+
+class SignUp extends StatefulWidget {
+  final String title;
+  const SignUp({Key? key, required this.title}) : super(key: key);
+
   @override
-  State<Login> createState() => _LoginState();
+  State<SignUp> createState() => _SignUpState();
 }
 
-class _LoginState extends State<Login> {
+class _SignUpState extends State<SignUp> {
   final _formKey = GlobalKey<FormState>();
   var rememberValue = false;
 
-  //firebase
+  // firebase
   String? errorMessage = '';
   bool isLogin = true;
 
   final TextEditingController _controllerEmail = TextEditingController();
   final TextEditingController _controllerPassword = TextEditingController();
-
-  Future<void> signInWithEmailAndPassword() async {
-    try {
-      await Auth().signInWithEmailAndPassword(
-          email: _controllerEmail.text, password: _controllerPassword.text);
-    } on FirebaseAuthException catch (e) {
-      setState(() {
-        errorMessage = e.message;
-      });
-    }
-  }
+  final TextEditingController _controllerPasswordConfirmation =
+      TextEditingController();
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      // resize -> biar waktu keluar keyboard gk overflow
       resizeToAvoidBottomInset: false,
       backgroundColor: Theme.of(context).colorScheme.background,
       body: Container(
@@ -47,7 +38,7 @@ class _LoginState extends State<Login> {
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               const Text(
-                "Sign In",
+                "Sign Up",
                 style: TextStyle(
                   fontWeight: FontWeight.bold,
                   fontSize: 40,
@@ -98,20 +89,25 @@ class _LoginState extends State<Login> {
                       const SizedBox(
                         height: 20,
                       ),
-                      CheckboxListTile(
-                        title: const Text(
-                          "Remember me",
-                          style: TextStyle(color: Colors.white),
-                        ),
-                        contentPadding: EdgeInsets.zero,
-                        value: rememberValue,
-                        activeColor: Theme.of(context).colorScheme.primary,
-                        onChanged: (newValue) {
-                          setState(() {
-                            rememberValue = newValue!;
-                          });
+                      TextFormField(
+                        controller: _controllerPasswordConfirmation,
+                        validator: (value) {
+                          if (value == null ||
+                              value.isEmpty ||
+                              value != _controllerPassword.text) {
+                            return 'Password tidak sesuai';
+                          }
+                          return null;
                         },
-                        controlAffinity: ListTileControlAffinity.leading,
+                        maxLines: 1,
+                        obscureText: true,
+                        decoration: InputDecoration(
+                          prefixIcon: const Icon(Icons.lock),
+                          hintText: 'Konfirmasi password anda',
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                        ),
                       ),
                       const SizedBox(
                         height: 20,
@@ -129,14 +125,13 @@ class _LoginState extends State<Login> {
 
                             try {
                               await FirebaseAuth.instance
-                                  .signInWithEmailAndPassword(
-                                      email: _controllerEmail.text.trim(),
-                                      password:
-                                          _controllerPassword.text.trim());
+                                  .createUserWithEmailAndPassword(
+                                      email: _controllerEmail.text,
+                                      password: _controllerPassword.text);
 
                               Navigator.of(context, rootNavigator: true).pop();
 
-                              context.goNamed('main');
+                              context.goNamed("main");
                             } on FirebaseAuthException catch (e) {
                               Navigator.of(context, rootNavigator: true).pop();
 
@@ -149,7 +144,7 @@ class _LoginState extends State<Login> {
                           padding: const EdgeInsets.fromLTRB(40, 15, 40, 15),
                         ),
                         child: const Text(
-                          'Sign In',
+                          'Sign Up',
                           style: TextStyle(
                               fontWeight: FontWeight.bold, color: Colors.white),
                         ),
@@ -161,14 +156,14 @@ class _LoginState extends State<Login> {
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           const Text(
-                            'Belum ada akun?',
+                            'Sudah punya akun?',
                             style: TextStyle(color: Colors.white),
                           ),
                           TextButton(
-                            onPressed: () {
-                              context.goNamed('signUp');
+                            onPressed: () async {
+                              context.goNamed('signIn');
                             },
-                            child: const Text('Buat disini'),
+                            child: const Text('Sign In disini'),
                           ),
                         ],
                       ),

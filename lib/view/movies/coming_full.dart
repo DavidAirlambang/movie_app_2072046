@@ -1,17 +1,16 @@
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
 import 'package:movie_app_2072046/service/movie_service.dart';
 
-import '../repository/repository.dart';
+import '../../repository/repository.dart';
 
-class PlayingFullMovie extends StatefulWidget {
-  const PlayingFullMovie({super.key});
+class ComingFullMovie extends StatefulWidget {
+  const ComingFullMovie({super.key});
 
   @override
-  State<PlayingFullMovie> createState() => _PlayingFullMovieState();
+  State<ComingFullMovie> createState() => _ComingFullMovieState();
 }
 
-class _PlayingFullMovieState extends State<PlayingFullMovie> {
+class _ComingFullMovieState extends State<ComingFullMovie> {
   Future _onRefresh() async {
     await Future.delayed(const Duration(seconds: 1));
     setState(() {});
@@ -23,7 +22,7 @@ class _PlayingFullMovieState extends State<PlayingFullMovie> {
       appBar: AppBar(
         iconTheme: const IconThemeData(color: Color(0xFFf4C10F)),
         title: const Text(
-          "Now Playing Movies",
+          "Coming Soon Movies",
           style: TextStyle(color: Color(0xFFf4C10F), fontSize: 20),
         ),
         backgroundColor: Theme.of(context).colorScheme.background,
@@ -32,7 +31,7 @@ class _PlayingFullMovieState extends State<PlayingFullMovie> {
         color: Theme.of(context).colorScheme.primary,
         onRefresh: _onRefresh,
         child: FutureBuilder(
-          future: MovieService().getListPlayingMovies(),
+          future: MovieService().getListComingMovies(),
           builder: (context, snapshot) {
             if (snapshot.hasData) {
               return Container(
@@ -45,12 +44,9 @@ class _PlayingFullMovieState extends State<PlayingFullMovie> {
                     mainAxisSpacing: 10,
                   ),
                   padding: const EdgeInsets.all(16),
-                  children: (snapshot.data ?? []).map((e) {
+                  children: (snapshot.data?.toList() ?? []).map((e) {
                     return InkWell(
-                      onTap: () {
-                        context.goNamed("detailMovieIn1",
-                            params: {"id": e.id.toString()});
-                      },
+                      onTap: () {},
                       child: Container(
                         width: 100,
                         decoration: BoxDecoration(
