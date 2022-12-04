@@ -3,15 +3,17 @@ import 'dart:developer';
 import 'package:email_validator/email_validator.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:movie_app_2072046/repository/notif.dart';
+import 'package:movie_app_2072046/service/provider.dart';
 
-class Login extends StatefulWidget {
+class Login extends ConsumerStatefulWidget {
   @override
-  State<Login> createState() => _LoginState();
+  ConsumerState<Login> createState() => _LoginState();
 }
 
-class _LoginState extends State<Login> {
+class _LoginState extends ConsumerState<Login> {
   final _formKey = GlobalKey<FormState>();
   var rememberValue = false;
 
@@ -116,11 +118,15 @@ class _LoginState extends State<Login> {
                                     )));
 
                             try {
-                              await FirebaseAuth.instance
+                              UserCredential result = await FirebaseAuth
+                                  .instance
                                   .signInWithEmailAndPassword(
                                       email: _controllerEmail.text.trim(),
                                       password:
                                           _controllerPassword.text.trim());
+                              User? user = result.user;
+
+                              ref.read(userNow.notifier).state = user;
 
                               Navigator.of(context, rootNavigator: true).pop();
 
@@ -160,9 +166,9 @@ class _LoginState extends State<Login> {
                           ),
                         ],
                       ),
-                    ],                                                                                                                                                                                                                                                                                                                                                              
+                    ],
                   ))
-            ],                            
+            ],
           )),
     );
   }

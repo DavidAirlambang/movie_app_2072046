@@ -106,17 +106,13 @@ class _MyAppState extends State<MyApp> {
               },
               routes: [
                 GoRoute(
-                  path: 'seats/:idMov',
+                  path: 'seats',
                   name: 'seats',
-                  builder: (context, state) {
-                    return Seats(
-                      idMov: int.parse(state.params['idMov']!),
-                    );
-                  },
+                  builder: (context, state) => const Seats(),
                 ),
               ]),
         ]),
-  ], initialLocation: '/main_page');
+  ], initialLocation: '/signIn');
 
   @override
   Widget build(BuildContext context) {

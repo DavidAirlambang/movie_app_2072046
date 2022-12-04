@@ -8,18 +8,20 @@ part of 'ticket.dart';
 
 _$_Ticket _$$_TicketFromJson(Map<String, dynamic> json) => _$_Ticket(
       ticketId: json['ticketId'] as String?,
-      movId: json['movId'] as int?,
+      movie: json['movie'] as Map<String, dynamic>?,
       jam: json['jam'] as String?,
       tanggal: json['tanggal'] == null
           ? null
           : DateTime.parse(json['tanggal'] as String),
       kursi: json['kursi'] as List<dynamic>?,
+      uid: json['uid'] as String?,
     );
 
 Map<String, dynamic> _$$_TicketToJson(_$_Ticket instance) => <String, dynamic>{
       'ticketId': instance.ticketId,
-      'movId': instance.movId,
+      'movie': instance.movie,
       'jam': instance.jam,
       'tanggal': instance.tanggal?.toIso8601String(),
       'kursi': instance.kursi,
+      'uid': instance.uid,
     };

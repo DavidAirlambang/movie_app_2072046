@@ -4,17 +4,17 @@ import 'package:calendar_timeline/calendar_timeline.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import 'package:movie_app_2072046/entity/detail/detail.dart';
-import 'package:movie_app_2072046/service/movie_service.dart';
-import 'package:movie_app_2072046/view/movies/detail_movie.dart';
+import 'package:movie_app_2072046/service/provider.dart';
 import 'package:movie_app_2072046/widget/seat_widget.dart';
 import 'package:movie_app_2072046/widget/time_widget.dart';
+import 'package:awesome_dialog/awesome_dialog.dart';
 
 import '../../entity/ticket/ticket.dart';
 
 class Seats extends ConsumerStatefulWidget {
-  final int idMov;
-  const Seats({super.key, required this.idMov});
+  const Seats({super.key});
 
   @override
   ConsumerState<Seats> createState() => _SeatsState();
@@ -26,8 +26,11 @@ class _SeatsState extends ConsumerState<Seats> {
   @override
   Widget build(BuildContext context) {
     // riverpod
-    String? jamPilihan = ref.watch(jamProvider);
-    List? kursiPilihan = ref.watch(kursiProvider);
+    final jamPilihan = ref.watch(jamProvider);
+    final kursiPilihan = ref.watch(kursiProvider);
+    final detail = ref.watch(selectedMovie);
+    final user = ref.watch(userNow);
+    log(user!.uid.toString());
 
     List<TimeOfDay> listTime = [
       const TimeOfDay(hour: 12, minute: 20),
@@ -43,42 +46,47 @@ class _SeatsState extends ConsumerState<Seats> {
 
       final ticket = Ticket(
           ticketId: docTicket.id,
-          movId: widget.idMov,
+          movie: detail?.toJson(),
           tanggal: datePilihan,
           jam: jamPilihan,
-          kursi: kursiPilihan);
+          kursi: kursiPilihan,
+          uid: user.uid);
 
       final json = ticket.toJson();
 
-      await docTicket
-          .set(json)
-          .then((value) => log("berhasil"))
-          .catchError((err) => log("gagal"));
+      await docTicket.set(json).then(
+        (value) {
+          AwesomeDialog(
+            context: context,
+            animType: AnimType.leftSlide,
+            headerAnimationLoop: false,
+            dialogType: DialogType.success,
+            // btnOkColor: Theme.of(context).colorScheme.primary,
+            showCloseIcon: true,
+            title: 'Success',
+            desc: "Pesanan Tiket Berhasil Dibuat",
+            btnOkOnPress: () {
+              context.goNamed('main');
+            },
+            btnOkIcon: Icons.check_circle,
+            onDismissCallback: (type) {
+              debugPrint('Dialog Dissmiss from callback $type');
+            },
+          ).show();
+        },
+      ).catchError((err) => log(err.toString()));
     }
 
     return Scaffold(
       backgroundColor: Theme.of(context).colorScheme.background,
       appBar: AppBar(
-        iconTheme: const IconThemeData(color: Color(0xFFf4C10F)),
-        elevation: 0,
-        backgroundColor: Theme.of(context).colorScheme.background,
-        centerTitle: true,
-        automaticallyImplyLeading: true,
-        // ganti title
-        title: FutureBuilder(
-          future: MovieService().getMovieDetail(widget.idMov),
-          builder: (context, snapshot) {
-            if (snapshot.hasData) {
-              return Text(
-                snapshot.data!.title!,
-                style: const TextStyle(color: Color(0xFFf4C10F), fontSize: 20),
-              );
-            } else {
-              return const Text("...");
-            }
-          },
-        ),
-      ),
+          iconTheme: const IconThemeData(color: Color(0xFFf4C10F)),
+          elevation: 0,
+          backgroundColor: Theme.of(context).colorScheme.background,
+          centerTitle: true,
+          automaticallyImplyLeading: true,
+          // ganti title
+          title: Text(detail!.title!.toString())),
       body: ListView(children: [
         const SizedBox(height: 10),
         //tanggal
@@ -102,7 +110,7 @@ class _SeatsState extends ConsumerState<Seats> {
         SizedBox(
           height: 80,
           // jam
-          child: TimeWidget(times: listTime, id: widget.idMov),
+          child: TimeWidget(times: listTime),
         ),
         const SizedBox(height: 15),
         // kursi
@@ -152,7 +160,7 @@ class _SeatsState extends ConsumerState<Seats> {
         color: Theme.of(context).colorScheme.background,
         child: ElevatedButton(
           onPressed: () {
-            log(widget.idMov.toString());
+            log(detail!.id.toString());
             log(datePilihan.toString());
             log(jamPilihan.toString());
             log(kursiPilihan.toString());

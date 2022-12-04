@@ -5,9 +5,11 @@ import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:movie_app_2072046/service/movie_service.dart';
+import 'package:movie_app_2072046/view/movies/home_page.dart';
 import 'package:movie_app_2072046/widget/movie_poster.dart';
 
 import '../../repository/repository.dart';
+import '../../service/provider.dart';
 
 class DetailMovie extends ConsumerWidget {
   final int id;
@@ -20,9 +22,7 @@ class DetailMovie extends ConsumerWidget {
     int length = 0;
 
     // riverpod
-    // String poster = ref.read(posterProvider.notifier).state;
-    // final judul = ref.watch(judulProvider.notifier);
-    // String test;
+    final detail = ref.watch(movieDetailProvider(id));
 
     //statusbar
     SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
@@ -41,8 +41,6 @@ class DetailMovie extends ConsumerWidget {
         builder: (context, snapshot) {
           if (snapshot.hasData) {
             length = snapshot.data!.genres!.length;
-            // judul.state = snapshot.data!.title!;
-            // log(poster);
 
             for (var element in snapshot.data!.genres!) {
               genres.add(element['name']);
@@ -237,10 +235,7 @@ class DetailMovie extends ConsumerWidget {
         color: Theme.of(context).colorScheme.background,
         child: ElevatedButton(
           onPressed: () {
-            context.pushNamed("seats", params: {
-              "id": id.toString(),
-              "idMov": id.toString(),
-            });
+            context.goNamed("seats", params: {"id": id.toString()});
           },
           style: ElevatedButton.styleFrom(
             backgroundColor: Theme.of(context).colorScheme.primary,

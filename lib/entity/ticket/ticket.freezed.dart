@@ -21,10 +21,11 @@ Ticket _$TicketFromJson(Map<String, dynamic> json) {
 /// @nodoc
 mixin _$Ticket {
   String? get ticketId => throw _privateConstructorUsedError;
-  int? get movId => throw _privateConstructorUsedError;
+  Map<String, dynamic>? get movie => throw _privateConstructorUsedError;
   String? get jam => throw _privateConstructorUsedError;
   DateTime? get tanggal => throw _privateConstructorUsedError;
   List<dynamic>? get kursi => throw _privateConstructorUsedError;
+  String? get uid => throw _privateConstructorUsedError;
 
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
   @JsonKey(ignore: true)
@@ -38,10 +39,11 @@ abstract class $TicketCopyWith<$Res> {
   @useResult
   $Res call(
       {String? ticketId,
-      int? movId,
+      Map<String, dynamic>? movie,
       String? jam,
       DateTime? tanggal,
-      List<dynamic>? kursi});
+      List<dynamic>? kursi,
+      String? uid});
 }
 
 /// @nodoc
@@ -58,20 +60,21 @@ class _$TicketCopyWithImpl<$Res, $Val extends Ticket>
   @override
   $Res call({
     Object? ticketId = freezed,
-    Object? movId = freezed,
+    Object? movie = freezed,
     Object? jam = freezed,
     Object? tanggal = freezed,
     Object? kursi = freezed,
+    Object? uid = freezed,
   }) {
     return _then(_value.copyWith(
       ticketId: freezed == ticketId
           ? _value.ticketId
           : ticketId // ignore: cast_nullable_to_non_nullable
               as String?,
-      movId: freezed == movId
-          ? _value.movId
-          : movId // ignore: cast_nullable_to_non_nullable
-              as int?,
+      movie: freezed == movie
+          ? _value.movie
+          : movie // ignore: cast_nullable_to_non_nullable
+              as Map<String, dynamic>?,
       jam: freezed == jam
           ? _value.jam
           : jam // ignore: cast_nullable_to_non_nullable
@@ -84,6 +87,10 @@ class _$TicketCopyWithImpl<$Res, $Val extends Ticket>
           ? _value.kursi
           : kursi // ignore: cast_nullable_to_non_nullable
               as List<dynamic>?,
+      uid: freezed == uid
+          ? _value.uid
+          : uid // ignore: cast_nullable_to_non_nullable
+              as String?,
     ) as $Val);
   }
 }
@@ -96,10 +103,11 @@ abstract class _$$_TicketCopyWith<$Res> implements $TicketCopyWith<$Res> {
   @useResult
   $Res call(
       {String? ticketId,
-      int? movId,
+      Map<String, dynamic>? movie,
       String? jam,
       DateTime? tanggal,
-      List<dynamic>? kursi});
+      List<dynamic>? kursi,
+      String? uid});
 }
 
 /// @nodoc
@@ -113,20 +121,21 @@ class __$$_TicketCopyWithImpl<$Res>
   @override
   $Res call({
     Object? ticketId = freezed,
-    Object? movId = freezed,
+    Object? movie = freezed,
     Object? jam = freezed,
     Object? tanggal = freezed,
     Object? kursi = freezed,
+    Object? uid = freezed,
   }) {
     return _then(_$_Ticket(
       ticketId: freezed == ticketId
           ? _value.ticketId
           : ticketId // ignore: cast_nullable_to_non_nullable
               as String?,
-      movId: freezed == movId
-          ? _value.movId
-          : movId // ignore: cast_nullable_to_non_nullable
-              as int?,
+      movie: freezed == movie
+          ? _value._movie
+          : movie // ignore: cast_nullable_to_non_nullable
+              as Map<String, dynamic>?,
       jam: freezed == jam
           ? _value.jam
           : jam // ignore: cast_nullable_to_non_nullable
@@ -139,6 +148,10 @@ class __$$_TicketCopyWithImpl<$Res>
           ? _value._kursi
           : kursi // ignore: cast_nullable_to_non_nullable
               as List<dynamic>?,
+      uid: freezed == uid
+          ? _value.uid
+          : uid // ignore: cast_nullable_to_non_nullable
+              as String?,
     ));
   }
 }
@@ -148,19 +161,28 @@ class __$$_TicketCopyWithImpl<$Res>
 class _$_Ticket implements _Ticket {
   const _$_Ticket(
       {this.ticketId,
-      this.movId,
+      final Map<String, dynamic>? movie,
       this.jam,
       this.tanggal,
-      final List<dynamic>? kursi})
-      : _kursi = kursi;
+      final List<dynamic>? kursi,
+      this.uid})
+      : _movie = movie,
+        _kursi = kursi;
 
   factory _$_Ticket.fromJson(Map<String, dynamic> json) =>
       _$$_TicketFromJson(json);
 
   @override
   final String? ticketId;
+  final Map<String, dynamic>? _movie;
   @override
-  final int? movId;
+  Map<String, dynamic>? get movie {
+    final value = _movie;
+    if (value == null) return null;
+    // ignore: implicit_dynamic_type
+    return EqualUnmodifiableMapView(value);
+  }
+
   @override
   final String? jam;
   @override
@@ -175,8 +197,11 @@ class _$_Ticket implements _Ticket {
   }
 
   @override
+  final String? uid;
+
+  @override
   String toString() {
-    return 'Ticket(ticketId: $ticketId, movId: $movId, jam: $jam, tanggal: $tanggal, kursi: $kursi)';
+    return 'Ticket(ticketId: $ticketId, movie: $movie, jam: $jam, tanggal: $tanggal, kursi: $kursi, uid: $uid)';
   }
 
   @override
@@ -186,16 +211,23 @@ class _$_Ticket implements _Ticket {
             other is _$_Ticket &&
             (identical(other.ticketId, ticketId) ||
                 other.ticketId == ticketId) &&
-            (identical(other.movId, movId) || other.movId == movId) &&
+            const DeepCollectionEquality().equals(other._movie, _movie) &&
             (identical(other.jam, jam) || other.jam == jam) &&
             (identical(other.tanggal, tanggal) || other.tanggal == tanggal) &&
-            const DeepCollectionEquality().equals(other._kursi, _kursi));
+            const DeepCollectionEquality().equals(other._kursi, _kursi) &&
+            (identical(other.uid, uid) || other.uid == uid));
   }
 
   @JsonKey(ignore: true)
   @override
-  int get hashCode => Object.hash(runtimeType, ticketId, movId, jam, tanggal,
-      const DeepCollectionEquality().hash(_kursi));
+  int get hashCode => Object.hash(
+      runtimeType,
+      ticketId,
+      const DeepCollectionEquality().hash(_movie),
+      jam,
+      tanggal,
+      const DeepCollectionEquality().hash(_kursi),
+      uid);
 
   @JsonKey(ignore: true)
   @override
@@ -214,23 +246,26 @@ class _$_Ticket implements _Ticket {
 abstract class _Ticket implements Ticket {
   const factory _Ticket(
       {final String? ticketId,
-      final int? movId,
+      final Map<String, dynamic>? movie,
       final String? jam,
       final DateTime? tanggal,
-      final List<dynamic>? kursi}) = _$_Ticket;
+      final List<dynamic>? kursi,
+      final String? uid}) = _$_Ticket;
 
   factory _Ticket.fromJson(Map<String, dynamic> json) = _$_Ticket.fromJson;
 
   @override
   String? get ticketId;
   @override
-  int? get movId;
+  Map<String, dynamic>? get movie;
   @override
   String? get jam;
   @override
   DateTime? get tanggal;
   @override
   List<dynamic>? get kursi;
+  @override
+  String? get uid;
   @override
   @JsonKey(ignore: true)
   _$$_TicketCopyWith<_$_Ticket> get copyWith =>

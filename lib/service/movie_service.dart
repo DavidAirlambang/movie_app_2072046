@@ -95,6 +95,6 @@ class MovieService {
   //end
 }
 
-final movieProvider = Provider((ref) => MovieService());
+final movieProvider = Provider<MovieService>((ref) => MovieService());
 
 

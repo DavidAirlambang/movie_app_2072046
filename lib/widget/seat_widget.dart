@@ -1,9 +1,6 @@
-import 'dart:developer';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-
-final kursiProvider = StateProvider.autoDispose<List>((ref) => []);
+import '../service/provider.dart';
 
 class SeatWidget extends ConsumerStatefulWidget {
   bool isReserved;
@@ -34,8 +31,6 @@ class _SeatWidgetState extends ConsumerState<SeatWidget> {
           sementara.contains(widget.kode)
               ? sementara.removeWhere((element) => element == widget.kode)
               : sementara.add(widget.kode);
-
-          log(sementara.toString());
           !widget.isReserved ? widget.isSelected = !widget.isSelected : null;
         });
       },

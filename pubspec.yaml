@@ -29,6 +29,7 @@ environment:
 # the latest version available on pub.dev. To see which dependencies have newer
 # versions available, run `flutter pub outdated`.
 dependencies:
+  awesome_dialog: ^3.0.2
   calendar_timeline: ^1.0.5
   carousel_slider: ^4.1.1
   cloud_firestore: ^4.1.0
@@ -45,6 +46,7 @@ dependencies:
   go_router: ^5.1.6
   hooks_riverpod: ^2.1.1
   json_annotation: ^4.7.0
+  quickalert: ^1.0.1
   riverpod: ^2.1.1
 
 dev_dependencies:

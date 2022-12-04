@@ -1,16 +1,11 @@
-import 'dart:developer';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:go_router/go_router.dart';
-
-final jamProvider = StateProvider<String?>((ref) => null);
+import '../service/provider.dart';
 
 class TimeWidget extends ConsumerStatefulWidget {
   final List<TimeOfDay> times;
-  int? id;
 
-  TimeWidget({Key? key, required this.times, required this.id})
+  const TimeWidget({Key? key, required this.times})
       : super(key: key);
 
   @override
