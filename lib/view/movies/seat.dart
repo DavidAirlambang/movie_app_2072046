@@ -169,7 +169,7 @@ class _SeatsState extends ConsumerState<Seats> {
         color: Theme.of(context).colorScheme.background,
         child: ElevatedButton(
           onPressed: () {
-            log(detail!.id.toString());
+            log(detail.id.toString());
             log(datePilihan.toString());
             log(jamPilihan.toString());
             log(kursiPilihan.toString());

@@ -1,11 +1,8 @@
-import 'dart:developer';
-
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:movie_app_2072046/service/movie_service.dart';
-import 'package:movie_app_2072046/view/movies/home_page.dart';
 import 'package:movie_app_2072046/widget/movie_poster.dart';
 
 import '../../repository/repository.dart';

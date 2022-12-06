@@ -3,7 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
-import '../../repository/notif.dart';
+import '../../widget/notif.dart';
 
 class SignUp extends StatefulWidget {
   final String title;

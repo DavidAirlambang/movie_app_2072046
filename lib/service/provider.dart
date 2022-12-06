@@ -1,13 +1,13 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:movie_app_2072046/entity/ticket/ticket.dart';
 import 'package:movie_app_2072046/service/movie_service.dart';
-
 import '../entity/detail/detail.dart';
 
 //simpan user
 final userNow = StateProvider<User?>((ref) => null);
+
+// Ambil Movie Service
+final movieProvider = Provider<MovieService>((ref) => MovieService());
 
 // ambil detail dari movie -> masukin selected
 final movieDetailProvider = FutureProvider.family<MovieDetail?, int>(
@@ -25,7 +25,7 @@ final selectedMovie = StateProvider<MovieDetail?>((ref) => null);
 final jamProvider = StateProvider<String?>((ref) => null);
 
 // kursi
-final kursiProvider = StateProvider<List>((ref) => []);
+final kursiProvider = StateProvider.autoDispose<List>((ref) => []);
 
 // date
 final dateProvider = StateProvider<DateTime?>((ref) => null);
