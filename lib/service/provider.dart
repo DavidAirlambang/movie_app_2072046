@@ -1,5 +1,7 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:movie_app_2072046/entity/ticket/ticket.dart';
 import 'package:movie_app_2072046/service/movie_service.dart';
 
 import '../entity/detail/detail.dart';
@@ -7,7 +9,7 @@ import '../entity/detail/detail.dart';
 //simpan user
 final userNow = StateProvider<User?>((ref) => null);
 
-// ambil detail dari movie
+// ambil detail dari movie -> masukin selected
 final movieDetailProvider = FutureProvider.family<MovieDetail?, int>(
   (ref, id) async {
     final data = ref.watch(movieProvider).getMovieDetail(id);
@@ -15,7 +17,7 @@ final movieDetailProvider = FutureProvider.family<MovieDetail?, int>(
     return data;
   },
 );
-
+// data movie yang udh dipilih
 final selectedMovie = StateProvider<MovieDetail?>((ref) => null);
 
 // ambil value dari selected
@@ -23,4 +25,7 @@ final selectedMovie = StateProvider<MovieDetail?>((ref) => null);
 final jamProvider = StateProvider<String?>((ref) => null);
 
 // kursi
-final kursiProvider = StateProvider.autoDispose<List>((ref) => []);
+final kursiProvider = StateProvider<List>((ref) => []);
+
+// date
+final dateProvider = StateProvider<DateTime?>((ref) => null);

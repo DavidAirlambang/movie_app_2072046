@@ -54,8 +54,17 @@ class _SeatsState extends ConsumerState<Seats> {
 
       final json = ticket.toJson();
 
+      showDialog(
+          context: context,
+          barrierDismissible: false,
+          builder: (context) => Center(
+                  child: CircularProgressIndicator(
+                color: Theme.of(context).colorScheme.primary,
+              )));
+
       await docTicket.set(json).then(
         (value) {
+          Navigator.of(context, rootNavigator: true).pop();
           AwesomeDialog(
             context: context,
             animType: AnimType.leftSlide,
@@ -125,31 +134,31 @@ class _SeatsState extends ConsumerState<Seats> {
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children:
-                  List.generate(5, (index) => SeatWidget(kode: 'A${index}')),
+                  List.generate(5, (index) => SeatWidget(kode: 'A$index')),
             ),
             const SizedBox(height: 10),
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children:
-                  List.generate(6, (index) => SeatWidget(kode: 'B${index}')),
+                  List.generate(6, (index) => SeatWidget(kode: 'B$index')),
             ),
             const SizedBox(height: 10),
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children:
-                  List.generate(6, (index) => SeatWidget(kode: 'C${index}')),
+                  List.generate(6, (index) => SeatWidget(kode: 'C$index')),
             ),
             const SizedBox(height: 10),
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children:
-                  List.generate(6, (index) => SeatWidget(kode: 'D${index}')),
+                  List.generate(6, (index) => SeatWidget(kode: 'D$index')),
             ),
             const SizedBox(height: 10),
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children:
-                  List.generate(5, (index) => SeatWidget(kode: 'E${index}')),
+                  List.generate(5, (index) => SeatWidget(kode: 'E$index')),
             ),
           ],
         )

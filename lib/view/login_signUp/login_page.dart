@@ -114,7 +114,7 @@ class _LoginState extends ConsumerState<Login> {
                                 barrierDismissible: false,
                                 builder: (context) => Center(
                                         child: CircularProgressIndicator(
-                                      color: Theme.of(context).primaryColor,
+                                      color: Theme.of(context).colorScheme.primary,
                                     )));
 
                             try {
