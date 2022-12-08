@@ -4,13 +4,19 @@ import '../repository/repository.dart';
 
 class MoviePoster extends StatelessWidget {
   final String path;
-  const MoviePoster({super.key, required this.path});
+  final double width;
+  final double height;
+  const MoviePoster(
+      {super.key,
+      required this.path,
+      required this.width,
+      required this.height});
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      height: 180,
-      width: 120,
+      height: height,
+      width: width,
       decoration: BoxDecoration(
         color: Theme.of(context).colorScheme.secondary,
         borderRadius: BorderRadius.circular(10),

@@ -114,7 +114,8 @@ class _LoginState extends ConsumerState<Login> {
                                 barrierDismissible: false,
                                 builder: (context) => Center(
                                         child: CircularProgressIndicator(
-                                      color: Theme.of(context).colorScheme.primary,
+                                      color:
+                                          Theme.of(context).colorScheme.primary,
                                     )));
 
                             try {
@@ -127,6 +128,7 @@ class _LoginState extends ConsumerState<Login> {
                               User? user = result.user;
 
                               ref.read(userNow.notifier).state = user;
+                              log(user!.uid);
 
                               Navigator.of(context, rootNavigator: true).pop();
 

@@ -75,7 +75,10 @@ class DetailMovie extends ConsumerWidget {
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   MoviePoster(
-                                      path: snapshot.data!.poster_path!),
+                                    path: snapshot.data!.poster_path!,
+                                    height: 180,
+                                    width: 120,
+                                  ),
                                   Container(
                                     padding: const EdgeInsets.only(
                                         top: 30, left: 16),
