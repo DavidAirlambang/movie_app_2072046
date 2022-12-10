@@ -33,7 +33,6 @@ class TicketPage extends ConsumerWidget {
         body: data.when(
             data: (data) {
               List<Ticket>? read = ref.watch(ticketStreamProvider).value;
-
               return Container(
                 margin: const EdgeInsets.only(bottom: 20),
                 child: ListView.builder(

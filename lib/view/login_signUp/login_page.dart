@@ -128,7 +128,6 @@ class _LoginState extends ConsumerState<Login> {
                               User? user = result.user;
 
                               ref.read(userNow.notifier).state = user;
-                              log(user!.uid);
 
                               Navigator.of(context, rootNavigator: true).pop();
 

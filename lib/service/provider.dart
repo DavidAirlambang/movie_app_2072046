@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -7,7 +9,25 @@ import '../entity/ticket/ticket.dart';
 
 // USER PROVIDER
 //simpan user
-final userNow = StateProvider<User?>((ref) => null);
+final userNow =
+    StateProvider<User?>((ref) => FirebaseAuth.instance.currentUser);
+
+// data user
+final getUserProvider = FutureProvider(
+  (ref) {
+    FirebaseFirestore.instance
+        .collection('users')
+        .doc(ref.read(userNow)!.uid)
+        .get()
+        .then((value) {
+      ref.read(userProvider.notifier).state = value.data();
+    });
+  },
+);
+final userProvider = StateProvider<Map?>((ref) => null);
+
+final dataTest = StateProvider((ref) => null);
+// .map((snapshot) => snapshot.data());
 
 /// MOVIE PROVIDER
 // Ambil Movie Service

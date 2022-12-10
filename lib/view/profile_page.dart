@@ -1,38 +1,33 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
+import 'dart:developer';
+
 import 'package:email_validator/email_validator.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:movie_app_2072046/widget/notif.dart';
+import 'package:movie_app_2072046/service/provider.dart';
 
-import '../../service/provider.dart';
-import '../../widget/notif.dart';
-
-class SignUp extends ConsumerStatefulWidget {
-  final String title;
-  const SignUp({Key? key, required this.title}) : super(key: key);
-
+class ProfilePage extends ConsumerStatefulWidget {
   @override
-  ConsumerState<SignUp> createState() => _SignUpState();
+  ConsumerState<ProfilePage> createState() => _ProfilePageState();
 }
 
-class _SignUpState extends ConsumerState<SignUp> {
+class _ProfilePageState extends ConsumerState<ProfilePage> {
   final _formKey = GlobalKey<FormState>();
   var rememberValue = false;
 
-  // firebase
+  //firebase
   String? errorMessage = '';
-  bool isLogin = true;
+  bool isProfilePage = true;
 
-  final TextEditingController _controllerUsername = TextEditingController();
   final TextEditingController _controllerEmail = TextEditingController();
   final TextEditingController _controllerPassword = TextEditingController();
-  final TextEditingController _controllerPasswordConfirmation =
-      TextEditingController();
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      // resize -> biar waktu keluar keyboard gk overflow
       resizeToAvoidBottomInset: false,
       backgroundColor: Theme.of(context).colorScheme.background,
       body: Container(
@@ -42,7 +37,7 @@ class _SignUpState extends ConsumerState<SignUp> {
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               const Text(
-                "Sign Up",
+                "ini Profile",
                 style: TextStyle(
                   fontWeight: FontWeight.bold,
                   fontSize: 40,
@@ -55,24 +50,6 @@ class _SignUpState extends ConsumerState<SignUp> {
                   key: _formKey,
                   child: Column(
                     children: [
-                      TextFormField(
-                        controller: _controllerUsername,
-                        validator: (value) {
-                          if (value == null || value.isEmpty) {
-                            return 'Masukan username anda';
-                          }
-                          return null;
-                        },
-                        maxLines: 1,
-                        decoration: InputDecoration(
-                          prefixIcon: const Icon(Icons.person),
-                          hintText: 'Masukan Username anda',
-                          border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(10),
-                          ),
-                        ),
-                      ),
-                      const SizedBox(height: 20),
                       TextFormField(
                         controller: _controllerEmail,
                         validator: (value) => EmailValidator.validate(value!)
@@ -111,25 +88,20 @@ class _SignUpState extends ConsumerState<SignUp> {
                       const SizedBox(
                         height: 20,
                       ),
-                      TextFormField(
-                        controller: _controllerPasswordConfirmation,
-                        validator: (value) {
-                          if (value == null ||
-                              value.isEmpty ||
-                              value != _controllerPassword.text) {
-                            return 'Password tidak sesuai';
-                          }
-                          return null;
-                        },
-                        maxLines: 1,
-                        obscureText: true,
-                        decoration: InputDecoration(
-                          prefixIcon: const Icon(Icons.lock),
-                          hintText: 'Konfirmasi password anda',
-                          border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(10),
-                          ),
+                      CheckboxListTile(
+                        title: const Text(
+                          "Remember me",
+                          style: TextStyle(color: Colors.white),
                         ),
+                        contentPadding: EdgeInsets.zero,
+                        value: rememberValue,
+                        activeColor: Theme.of(context).colorScheme.primary,
+                        onChanged: (newValue) {
+                          setState(() {
+                            rememberValue = newValue!;
+                          });
+                        },
+                        controlAffinity: ListTileControlAffinity.leading,
                       ),
                       const SizedBox(
                         height: 20,
@@ -142,33 +114,25 @@ class _SignUpState extends ConsumerState<SignUp> {
                                 barrierDismissible: false,
                                 builder: (context) => Center(
                                         child: CircularProgressIndicator(
-                                      color: Theme.of(context).primaryColor,
+                                      color:
+                                          Theme.of(context).colorScheme.primary,
                                     )));
 
                             try {
-                              // create
                               UserCredential result = await FirebaseAuth
                                   .instance
-                                  .createUserWithEmailAndPassword(
-                                      email: _controllerEmail.text,
-                                      password: _controllerPassword.text);
-
+                                  .signInWithEmailAndPassword(
+                                      email: _controllerEmail.text.trim(),
+                                      password:
+                                          _controllerPassword.text.trim());
                               User? user = result.user;
-                              ref.read(userNow.notifier).state = user;
 
-                              // add user
-                              FirebaseFirestore.instance
-                                  .collection('users')
-                                  .doc(user!.uid)
-                                  .set({
-                                'username': _controllerUsername.text,
-                                'email': _controllerEmail.text,
-                                'uid': user.uid
-                              });
+                              ref.read(userNow.notifier).state = user;
+                              log(user!.uid);
 
                               Navigator.of(context, rootNavigator: true).pop();
 
-                              context.goNamed("main");
+                              context.goNamed('main');
                             } on FirebaseAuthException catch (e) {
                               Navigator.of(context, rootNavigator: true).pop();
 
@@ -181,7 +145,7 @@ class _SignUpState extends ConsumerState<SignUp> {
                           padding: const EdgeInsets.fromLTRB(40, 15, 40, 15),
                         ),
                         child: const Text(
-                          'Sign Up',
+                          'Sign In',
                           style: TextStyle(
                               fontWeight: FontWeight.bold, color: Colors.white),
                         ),
@@ -193,14 +157,14 @@ class _SignUpState extends ConsumerState<SignUp> {
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           const Text(
-                            'Sudah punya akun?',
+                            'Belum ada akun?',
                             style: TextStyle(color: Colors.white),
                           ),
                           TextButton(
-                            onPressed: () async {
-                              context.goNamed('signIn');
+                            onPressed: () {
+                              context.goNamed('signUp');
                             },
-                            child: const Text('Sign In disini'),
+                            child: const Text('Buat disini'),
                           ),
                         ],
                       ),

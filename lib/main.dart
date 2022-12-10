@@ -1,8 +1,13 @@
+import 'dart:developer';
+
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:movie_app_2072046/service/provider.dart';
+import 'package:movie_app_2072046/view/profile_page.dart';
 import 'package:movie_app_2072046/widget/notif.dart';
 import 'package:movie_app_2072046/view/login_signUp/login_page.dart';
 
@@ -33,86 +38,87 @@ ColorScheme defaultColorScheme = const ColorScheme(
   brightness: Brightness.dark,
 );
 
-class MyApp extends StatefulWidget {
+class MyApp extends ConsumerStatefulWidget {
   MyApp({Key? key}) : super(key: key);
 
   @override
-  State<MyApp> createState() => _MyAppState();
+  ConsumerState<MyApp> createState() => _MyAppState();
 }
 
-class _MyAppState extends State<MyApp> {
-  static TimeOfDay spiltTime(time) {
-    time = time.split("(")[1].split(")")[0];
-    time = TimeOfDay(
-        hour: int.parse(time.split(":")[0]),
-        minute: int.parse(time.split(":")[1]));
-    return time;
-  }
-
+class _MyAppState extends ConsumerState<MyApp> {
   @override
   void initState() {
+    super.initState();
     SystemChrome.setEnabledSystemUIMode(SystemUiMode.manual,
         overlays: [SystemUiOverlay.top]);
-    super.initState();
   }
 
-  final GoRouter router = GoRouter(routes: [
-    GoRoute(
-      path: '/signIn',
-      name: 'signIn',
-      builder: (context, state) => Login(),
-    ),
-    GoRoute(
-        path: '/sign_up',
-        name: 'signUp',
-        builder: (context, state) => const SignUp(
-              title: 'Movie App',
-            )),
-    GoRoute(
-        path: '/main_page',
-        name: 'main',
-        builder: (context, state) => const MainPage(),
-        routes: [
-          GoRoute(
-              path: 'playing_full',
-              name: 'playingFull',
-              builder: (context, state) => const PlayingFullMovie(),
-              routes: [
-                GoRoute(
-                    path: 'detail_movie/:id',
-                    name: 'detailMovieIn1',
-                    builder: (context, state) {
-                      return DetailMovie(id: int.parse(state.params['id']!));
-                    })
-              ]),
-          GoRoute(
-              path: 'coming_full',
-              name: 'comingFull',
-              builder: (context, state) => const ComingFullMovie(),
-              routes: [
-                GoRoute(
+  final GoRouter router = GoRouter(
+      routes: [
+        GoRoute(
+          path: '/signIn',
+          name: 'signIn',
+          builder: (context, state) => Login(),
+        ),
+        GoRoute(
+            path: '/sign_up',
+            name: 'signUp',
+            builder: (context, state) => const SignUp(
+                  title: 'Movie App',
+                )),
+        GoRoute(
+            path: '/main_page',
+            name: 'main',
+            builder: (context, state) => const MainPage(),
+            routes: [
+              GoRoute(
+                  path: 'playing_full',
+                  name: 'playingFull',
+                  builder: (context, state) => const PlayingFullMovie(),
+                  routes: [
+                    GoRoute(
+                        path: 'detail_movie/:id',
+                        name: 'detailMovieIn1',
+                        builder: (context, state) {
+                          return DetailMovie(
+                              id: int.parse(state.params['id']!));
+                        })
+                  ]),
+              GoRoute(
+                  path: 'coming_full',
+                  name: 'comingFull',
+                  builder: (context, state) => const ComingFullMovie(),
+                  routes: [
+                    GoRoute(
+                      path: 'detail_movie/:id',
+                      name: 'detailMovieIn2',
+                      builder: (context, state) {
+                        return DetailMovie(id: int.parse(state.params['id']!));
+                      },
+                    ),
+                  ]),
+              GoRoute(
                   path: 'detail_movie/:id',
-                  name: 'detailMovieIn2',
+                  name: 'detailMovie',
                   builder: (context, state) {
                     return DetailMovie(id: int.parse(state.params['id']!));
                   },
-                ),
-              ]),
-          GoRoute(
-              path: 'detail_movie/:id',
-              name: 'detailMovie',
-              builder: (context, state) {
-                return DetailMovie(id: int.parse(state.params['id']!));
-              },
-              routes: [
-                GoRoute(
-                  path: 'seats',
-                  name: 'seats',
-                  builder: (context, state) => const Seats(),
-                ),
-              ]),
-        ]),
-  ], initialLocation: '/signIn');
+                  routes: [
+                    GoRoute(
+                      path: 'seats',
+                      name: 'seats',
+                      builder: (context, state) => const Seats(),
+                    ),
+                  ]),
+              GoRoute(
+                path: 'profile',
+                name: 'profile',
+                builder: (context, state) => ProfilePage(),
+              ),
+            ]),
+      ],
+      initialLocation:
+          FirebaseAuth.instance.currentUser != null ? '/main_page' : '/signIn');
 
   @override
   Widget build(BuildContext context) {

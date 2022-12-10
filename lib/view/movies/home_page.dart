@@ -1,19 +1,28 @@
+import 'dart:developer';
+
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:movie_app_2072046/service/provider.dart';
 
 import '../../widget/carousel_widget.dart';
 import '../../widget/coming_widget.dart';
 import '../../widget/playing_widget.dart';
 
-class HomePage extends StatefulWidget {
+class HomePage extends ConsumerStatefulWidget {
   const HomePage({super.key});
 
   @override
-  State<HomePage> createState() => _HomePageState();
+  ConsumerState<HomePage> createState() => _HomePageState();
 }
 
-class _HomePageState extends State<HomePage> {
+class _HomePageState extends ConsumerState<HomePage> {
+  @override
+  void initState() {
+    super.initState();
+    final test = ref.read(getUserProvider);
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -24,16 +33,6 @@ class _HomePageState extends State<HomePage> {
           style: TextStyle(color: Color(0xFFf4C10F), fontSize: 22),
         ),
         centerTitle: true,
-        leading: TextButton(
-          onPressed: () async {
-            await FirebaseAuth.instance.signOut();
-            context.goNamed('signIn');
-          },
-          child: const Icon(
-            Icons.logout,
-            color: Color(0xFFf4C10F),
-          ),
-        ),
         backgroundColor: Theme.of(context).colorScheme.background,
       ),
       body: Container(

@@ -1,7 +1,6 @@
 import 'dart:developer';
 
 import 'package:flutter/material.dart';
-import 'package:movie_app_2072046/service/movie_service.dart';
 import 'package:movie_app_2072046/view/movies/home_page.dart';
 import 'package:movie_app_2072046/view/setting_page.dart';
 import 'package:movie_app_2072046/view/ticket_page.dart';
@@ -20,12 +19,6 @@ class _MainPageState extends State<MainPage> {
     const TicketPage(),
     const SettingPage(),
   ];
-
-//sementara
-  @override
-  void initState() {
-    MovieService().getMovieDetail(436270);
-  }
 
   @override
   Widget build(BuildContext context) {
