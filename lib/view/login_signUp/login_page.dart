@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:email_validator/email_validator.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -15,7 +13,6 @@ class Login extends ConsumerStatefulWidget {
 
 class _LoginState extends ConsumerState<Login> {
   final _formKey = GlobalKey<FormState>();
-  var rememberValue = false;
 
   //firebase
   String? errorMessage = '';
@@ -87,21 +84,6 @@ class _LoginState extends ConsumerState<Login> {
                       ),
                       const SizedBox(
                         height: 20,
-                      ),
-                      CheckboxListTile(
-                        title: const Text(
-                          "Remember me",
-                          style: TextStyle(color: Colors.white),
-                        ),
-                        contentPadding: EdgeInsets.zero,
-                        value: rememberValue,
-                        activeColor: Theme.of(context).colorScheme.primary,
-                        onChanged: (newValue) {
-                          setState(() {
-                            rememberValue = newValue!;
-                          });
-                        },
-                        controlAffinity: ListTileControlAffinity.leading,
                       ),
                       const SizedBox(
                         height: 20,

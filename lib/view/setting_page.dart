@@ -19,7 +19,9 @@ class SettingPage extends ConsumerWidget {
     final dataUser = ref.watch(userProvider);
     final usernya = ref.watch(userNow);
 
-    // log(dataUser.toString());
+    final _formKey = GlobalKey<FormState>();
+    final TextEditingController _controllerUsername = TextEditingController();
+    final TextEditingController _controllerPassword = TextEditingController();
 
     Color bacColor = Theme.of(context).colorScheme.background;
     return Scaffold(
@@ -43,6 +45,7 @@ class SettingPage extends ConsumerWidget {
                 onPressed: (context) {
                   late AwesomeDialog dialog;
                   dialog = AwesomeDialog(
+                    dialogBackgroundColor: Colors.grey[800],
                     context: context,
                     dialogType: DialogType.noHeader,
                     keyboardAware: true,
@@ -59,13 +62,26 @@ class SettingPage extends ConsumerWidget {
                           ),
                           Material(
                             elevation: 0,
-                            color: Colors.blueGrey.withAlpha(40),
-                            child: TextFormField(
-                              autofocus: true,
-                              minLines: 1,
-                              decoration: const InputDecoration(
-                                border: InputBorder.none,
-                                labelText: 'Username',
+                            color: Colors.grey[800],
+                            child: Form(
+                              key: _formKey,
+                              child: TextFormField(
+                                autofocus: true,
+                                controller: _controllerUsername,
+                                validator: (value) {
+                                  if (value == null || value.isEmpty) {
+                                    return 'Masukan username baru anda';
+                                  }
+                                  return null;
+                                },
+                                maxLines: 1,
+                                obscureText: true,
+                                decoration: InputDecoration(
+                                  hintText: 'Masukan username baru anda',
+                                  border: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(10),
+                                  ),
+                                ),
                               ),
                             ),
                           ),
@@ -76,7 +92,7 @@ class SettingPage extends ConsumerWidget {
                             isFixedHeight: false,
                             text: 'Save',
                             pressEvent: () {
-                              dialog.dismiss();
+                              if (_formKey.currentState!.validate()) {}
                             },
                           )
                         ],
@@ -93,6 +109,7 @@ class SettingPage extends ConsumerWidget {
                 onPressed: (context) {
                   late AwesomeDialog dialog;
                   dialog = AwesomeDialog(
+                    dialogBackgroundColor: Colors.grey[800],
                     context: context,
                     dialogType: DialogType.noHeader,
                     keyboardAware: true,
@@ -109,13 +126,26 @@ class SettingPage extends ConsumerWidget {
                           ),
                           Material(
                             elevation: 0,
-                            color: Colors.blueGrey.withAlpha(40),
-                            child: TextFormField(
-                              autofocus: true,
-                              minLines: 1,
-                              decoration: const InputDecoration(
-                                border: InputBorder.none,
-                                labelText: 'Password',
+                            color: Colors.grey[800],
+                            child: Form(
+                              key: _formKey,
+                              child: TextFormField(
+                                autofocus: true,
+                                controller: _controllerUsername,
+                                validator: (value) {
+                                  if (value == null || value.isEmpty) {
+                                    return 'Masukan password baru anda';
+                                  }
+                                  return null;
+                                },
+                                maxLines: 1,
+                                obscureText: true,
+                                decoration: InputDecoration(
+                                  hintText: 'Masukan password baru anda',
+                                  border: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(10),
+                                  ),
+                                ),
                               ),
                             ),
                           ),
@@ -126,7 +156,7 @@ class SettingPage extends ConsumerWidget {
                             isFixedHeight: false,
                             text: 'Save',
                             pressEvent: () {
-                              dialog.dismiss();
+                              if (_formKey.currentState!.validate()) {}
                             },
                           )
                         ],
