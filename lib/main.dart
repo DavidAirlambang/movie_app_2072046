@@ -1,13 +1,10 @@
-import 'dart:developer';
-
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:movie_app_2072046/service/provider.dart';
-import 'package:movie_app_2072046/view/profile_page.dart';
+import 'package:movie_app_2072046/view/topUp_page.dart';
 import 'package:movie_app_2072046/widget/notif.dart';
 import 'package:movie_app_2072046/view/login_signUp/login_page.dart';
 
@@ -111,9 +108,9 @@ class _MyAppState extends ConsumerState<MyApp> {
                     ),
                   ]),
               GoRoute(
-                path: 'profile',
-                name: 'profile',
-                builder: (context, state) => ProfilePage(),
+                path: 'topUp',
+                name: 'topUp',
+                builder: (context, state) => const TopUp(),
               ),
             ]),
       ],

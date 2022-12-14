@@ -30,7 +30,7 @@ class _CarouselState extends State<Carousel> {
                 items: (snapshot.data ?? [])
                     .map((e) => InkWell(
                           onTap: (() {
-                            context.goNamed("detailMovie",
+                            context.pushNamed("detailMovie",
                                 params: {"id": e.id.toString()});
                           }),
                           child: Container(

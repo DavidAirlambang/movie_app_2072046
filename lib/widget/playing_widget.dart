@@ -19,7 +19,7 @@ class NowPlaying extends StatelessWidget {
                 Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
               InkWell(
                 onTap: () {
-                  context.goNamed("playingFull");
+                  context.pushNamed("playingFull");
                 },
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -49,7 +49,7 @@ class NowPlaying extends StatelessWidget {
                     (e) {
                       return InkWell(
                         onTap: () {
-                          context.goNamed("detailMovie",
+                          context.pushNamed("detailMovie",
                               params: {"id": e.id.toString()});
                         },
                         child: Container(

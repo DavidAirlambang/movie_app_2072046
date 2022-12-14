@@ -163,6 +163,7 @@ class _SignUpState extends ConsumerState<SignUp> {
                                   .set({
                                 'username': _controllerUsername.text,
                                 'email': _controllerEmail.text,
+                                'wallet': 0,
                                 'uid': user.uid
                               });
 

@@ -70,7 +70,6 @@ class _SeatsState extends ConsumerState<Seats> {
             animType: AnimType.leftSlide,
             headerAnimationLoop: false,
             dialogType: DialogType.success,
-            // btnOkColor: Theme.of(context).colorScheme.primary,
             showCloseIcon: true,
             title: 'Success',
             desc: "Pesanan Tiket Berhasil Dibuat",

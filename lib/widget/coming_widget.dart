@@ -19,7 +19,7 @@ class ComingSoon extends StatelessWidget {
                 Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
               InkWell(
                 onTap: () {
-                  context.goNamed("comingFull");
+                  context.pushNamed("comingFull");
                 },
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,

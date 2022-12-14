@@ -1,13 +1,9 @@
-import 'dart:convert';
-import 'dart:developer';
-
 import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
-import 'package:movie_app_2072046/service/provider.dart';
 import 'package:movie_app_2072046/widget/user_widget.dart';
 import 'package:settings_ui/settings_ui.dart';
 
@@ -16,12 +12,9 @@ class SettingPage extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final dataUser = ref.watch(userProvider);
-    final usernya = ref.watch(userNow);
-
-    final _formKey = GlobalKey<FormState>();
-    final TextEditingController _controllerUsername = TextEditingController();
-    final TextEditingController _controllerPassword = TextEditingController();
+    final formKey = GlobalKey<FormState>();
+    final TextEditingController controllerUsername = TextEditingController();
+    final TextEditingController controllerPassword = TextEditingController();
 
     Color bacColor = Theme.of(context).colorScheme.background;
     return Scaffold(
@@ -64,10 +57,10 @@ class SettingPage extends ConsumerWidget {
                             elevation: 0,
                             color: Colors.grey[800],
                             child: Form(
-                              key: _formKey,
+                              key: formKey,
                               child: TextFormField(
                                 autofocus: true,
-                                controller: _controllerUsername,
+                                controller: controllerUsername,
                                 validator: (value) {
                                   if (value == null || value.isEmpty) {
                                     return 'Masukan username baru anda';
@@ -92,7 +85,7 @@ class SettingPage extends ConsumerWidget {
                             isFixedHeight: false,
                             text: 'Save',
                             pressEvent: () {
-                              if (_formKey.currentState!.validate()) {}
+                              if (formKey.currentState!.validate()) {}
                             },
                           )
                         ],
@@ -128,10 +121,10 @@ class SettingPage extends ConsumerWidget {
                             elevation: 0,
                             color: Colors.grey[800],
                             child: Form(
-                              key: _formKey,
+                              key: formKey,
                               child: TextFormField(
                                 autofocus: true,
-                                controller: _controllerUsername,
+                                controller: controllerPassword,
                                 validator: (value) {
                                   if (value == null || value.isEmpty) {
                                     return 'Masukan password baru anda';
@@ -156,7 +149,7 @@ class SettingPage extends ConsumerWidget {
                             isFixedHeight: false,
                             text: 'Save',
                             pressEvent: () {
-                              if (_formKey.currentState!.validate()) {}
+                              if (formKey.currentState!.validate()) {}
                             },
                           )
                         ],

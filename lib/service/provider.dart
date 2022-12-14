@@ -13,7 +13,7 @@ final userNow =
     StateProvider<User?>((ref) => FirebaseAuth.instance.currentUser);
 
 // data user
-final getUserProvider = FutureProvider(
+final getUserProvider = FutureProvider.autoDispose(
   (ref) {
     FirebaseFirestore.instance
         .collection('users')
@@ -25,6 +25,18 @@ final getUserProvider = FutureProvider(
   },
 );
 final userProvider = StateProvider<Map?>((ref) => null);
+
+// update user
+final updateUserProvider = FutureProvider.family(
+  (ref, update) {
+    final docUser = FirebaseFirestore.instance
+        .collection('users')
+        .doc(ref.read(userNow)!.uid);
+
+    // isi filednya harus map -> {'nama' : isi}
+    docUser.update(update as Map<String, Object?>);
+  },
+);
 
 final dataTest = StateProvider((ref) => null);
 // .map((snapshot) => snapshot.data());
