@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../service/provider.dart';
@@ -21,16 +23,16 @@ class SeatWidget extends ConsumerStatefulWidget {
 class _SeatWidgetState extends ConsumerState<SeatWidget> {
   @override
   Widget build(BuildContext context) {
-    List sementara = ref.read(kursiProvider.notifier).state;
+    List kursi = ref.watch(kursiProvider.notifier).state;
 
     return InkWell(
       splashColor: Colors.transparent,
       highlightColor: Colors.transparent,
       onTap: () {
         setState(() {
-          sementara.contains(widget.kode)
-              ? sementara.removeWhere((element) => element == widget.kode)
-              : sementara.add(widget.kode);
+          kursi.contains(widget.kode)
+              ? kursi.removeWhere((element) => element == widget.kode)
+              : kursi.add(widget.kode);
           !widget.isReserved ? widget.isSelected = !widget.isSelected : null;
         });
       },

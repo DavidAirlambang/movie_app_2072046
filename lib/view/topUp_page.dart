@@ -1,7 +1,9 @@
 import 'dart:developer';
 
+import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import 'package:movie_app_2072046/service/provider.dart';
 import 'package:syncfusion_flutter_sliders/sliders.dart';
 
@@ -37,14 +39,28 @@ class _TopUpState extends ConsumerState<TopUp> {
         color: Theme.of(context).colorScheme.background,
         child: ElevatedButton(
           onPressed: () {
-            log((double.parse(dataUser!['wallet']) + topUped)
-                .toInt()
-                .toString());
-            ref.read(updateUserProvider({
-              'wallet': (double.parse(dataUser['wallet']) + topUped)
-                  .round()
-                  .toString()
-            }));
+            setState(() {
+              ref.read(updateUserProvider({
+                'wallet': (double.parse(dataUser!['wallet']) + topUped)
+                    .round()
+                    .toString()
+              }));
+            });
+            AwesomeDialog(
+              context: context,
+              headerAnimationLoop: false,
+              dialogType: DialogType.success,
+              showCloseIcon: true,
+              title: 'Success',
+              desc: "Top Up Berhasil",
+              btnOkOnPress: () {
+                context.pop();
+              },
+              btnOkIcon: Icons.check_circle,
+              onDismissCallback: (type) {
+                debugPrint('Dialog Dissmiss from callback $type');
+              },
+            ).show();
             ref.read(getUserProvider);
           },
           style: ElevatedButton.styleFrom(

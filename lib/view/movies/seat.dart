@@ -2,11 +2,13 @@ import 'dart:developer';
 
 import 'package:calendar_timeline/calendar_timeline.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:dotted_line/dotted_line.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:movie_app_2072046/entity/detail/detail.dart';
 import 'package:movie_app_2072046/service/provider.dart';
+import 'package:movie_app_2072046/view/setting_page.dart';
 import 'package:movie_app_2072046/widget/seat_widget.dart';
 import 'package:movie_app_2072046/widget/time_widget.dart';
 import 'package:awesome_dialog/awesome_dialog.dart';
@@ -30,6 +32,7 @@ class _SeatsState extends ConsumerState<Seats> {
     final kursiPilihan = ref.watch(kursiProvider);
     final detail = ref.watch(selectedMovie);
     final user = ref.watch(userNow);
+    final dataUser = ref.watch(userProvider);
     log(user!.uid.toString());
 
     List<TimeOfDay> listTime = [
@@ -61,28 +64,53 @@ class _SeatsState extends ConsumerState<Seats> {
                   child: CircularProgressIndicator(
                 color: Theme.of(context).colorScheme.primary,
               )));
-
-      await docTicket.set(json).then(
-        (value) {
-          Navigator.of(context, rootNavigator: true).pop();
-          AwesomeDialog(
-            context: context,
-            animType: AnimType.leftSlide,
-            headerAnimationLoop: false,
-            dialogType: DialogType.success,
-            showCloseIcon: true,
-            title: 'Success',
-            desc: "Pesanan Tiket Berhasil Dibuat",
-            btnOkOnPress: () {
-              context.goNamed('main');
-            },
-            btnOkIcon: Icons.check_circle,
-            onDismissCallback: (type) {
-              debugPrint('Dialog Dissmiss from callback $type');
-            },
-          ).show();
-        },
-      ).catchError((err) => log(err.toString()));
+      if (int.parse(dataUser!['wallet']) > kursiPilihan.length * 50000) {
+        // tambah tiket
+        await docTicket.set(json).then(
+          (value) {
+            Navigator.of(context, rootNavigator: true).pop();
+            AwesomeDialog(
+              context: context,
+              animType: AnimType.leftSlide,
+              headerAnimationLoop: false,
+              dialogType: DialogType.success,
+              showCloseIcon: true,
+              title: 'Success',
+              desc: "Pesanan Tiket Berhasil Dibuat",
+              btnOkOnPress: () {
+                context.pushNamed('main');
+              },
+              btnOkIcon: Icons.check_circle,
+              onDismissCallback: (type) {
+                debugPrint('Dialog Dissmiss from callback $type');
+              },
+            ).show();
+            // potong wallet
+            ref.read(updateUserProvider({
+              'wallet': (double.parse(dataUser['wallet']) -
+                      kursiPilihan.length * 50000.0)
+                  .round()
+                  .toString()
+            }));
+          },
+        ).catchError((err) => log(err.toString()));
+      } else {
+        Navigator.of(context, rootNavigator: true).pop();
+        AwesomeDialog(
+          context: context,
+          dialogType: DialogType.warning,
+          headerAnimationLoop: false,
+          animType: AnimType.bottomSlide,
+          title: 'Saldo Tidak Mecukupi',
+          desc: 'Silahkan top up saldo anda terlebih dahulu',
+          buttonsTextStyle: const TextStyle(color: Colors.black),
+          showCloseIcon: true,
+          btnCancelOnPress: () {},
+          btnOkOnPress: () {
+            context.pushNamed('topUp');
+          },
+        ).show();
+      }
     }
 
     return Scaffold(
@@ -132,8 +160,11 @@ class _SeatsState extends ConsumerState<Seats> {
           children: [
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
-              children:
-                  List.generate(5, (index) => SeatWidget(kode: 'A$index')),
+              children: List.generate(
+                  5,
+                  (index) => InkWell(
+                      onTap: () => setState(() {}),
+                      child: SeatWidget(kode: 'A$index'))),
             ),
             const SizedBox(height: 10),
             Row(
@@ -160,7 +191,9 @@ class _SeatsState extends ConsumerState<Seats> {
                   List.generate(5, (index) => SeatWidget(kode: 'E$index')),
             ),
           ],
-        )
+        ),
+        const SizedBox(height: 30),
+        // harga
       ]),
       //button
       bottomSheet: Container(
@@ -168,11 +201,93 @@ class _SeatsState extends ConsumerState<Seats> {
         color: Theme.of(context).colorScheme.background,
         child: ElevatedButton(
           onPressed: () {
-            log(detail.id.toString());
-            log(datePilihan.toString());
-            log(jamPilihan.toString());
-            log(kursiPilihan.toString());
-            addTicket();
+            AwesomeDialog(
+              context: context,
+              dialogType: DialogType.noHeader,
+              borderSide: BorderSide(
+                color: Theme.of(context).colorScheme.primary,
+                width: 2,
+              ),
+              width: 400,
+              buttonsBorderRadius: const BorderRadius.all(
+                Radius.circular(2),
+              ),
+              dismissOnTouchOutside: true,
+              dismissOnBackKeyPress: false,
+              headerAnimationLoop: false,
+              animType: AnimType.bottomSlide,
+              body: Container(
+                padding: const EdgeInsets.symmetric(horizontal: 8),
+                width: 300,
+                child: Column(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        "Order Confirmation",
+                        style: TextStyle(
+                            color: Theme.of(context).colorScheme.primary,
+                            fontSize: 20,
+                            fontWeight: FontWeight.bold),
+                      ),
+                      const SizedBox(height: 10),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          const Text("Your Wallet ",
+                              style: TextStyle(fontSize: 16)),
+                          Text(
+                            CurrencyFormat.convertToIdr(
+                                int.parse(dataUser!['wallet']), 0),
+                            style: const TextStyle(fontSize: 16),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 10),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          const Text("Total Amount ",
+                              style: TextStyle(fontSize: 16)),
+                          Text(
+                            '- ${CurrencyFormat.convertToIdr(50000 * kursiPilihan.length, 0)}',
+                            style: const TextStyle(
+                                fontSize: 16, color: Colors.red),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 10),
+                      DottedLine(
+                          dashColor: Theme.of(context).colorScheme.primary,
+                          dashRadius: 2.0,
+                          lineThickness: 2),
+                      const SizedBox(height: 10),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          const Text("After Payment ",
+                              style: TextStyle(fontSize: 16)),
+                          Text(
+                            CurrencyFormat.convertToIdr(
+                                int.parse(dataUser['wallet']) -
+                                    50000 * kursiPilihan.length,
+                                0),
+                            style: const TextStyle(
+                                fontSize: 18, fontWeight: FontWeight.bold),
+                          ),
+                        ],
+                      ),
+                    ]),
+              ),
+              showCloseIcon: true,
+              btnOkOnPress: () {
+                setState(() {
+                  addTicket();
+                  ref.read(getUserProvider);
+                });
+              },
+              btnOkText: "Pay",
+            ).show();
           },
           style: ElevatedButton.styleFrom(
             backgroundColor: Theme.of(context).colorScheme.primary,

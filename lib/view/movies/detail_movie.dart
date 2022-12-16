@@ -235,7 +235,7 @@ class DetailMovie extends ConsumerWidget {
         color: Theme.of(context).colorScheme.background,
         child: ElevatedButton(
           onPressed: () {
-            context.goNamed("seats", params: {"id": id.toString()});
+            context.pushNamed("seats", params: {"id": id.toString()});
           },
           style: ElevatedButton.styleFrom(
             backgroundColor: Theme.of(context).colorScheme.primary,
