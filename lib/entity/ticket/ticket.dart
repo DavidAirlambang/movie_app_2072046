@@ -1,6 +1,4 @@
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
-import 'package:movie_app_2072046/entity/detail/detail.dart';
 
 part 'ticket.freezed.dart';
 part 'ticket.g.dart';

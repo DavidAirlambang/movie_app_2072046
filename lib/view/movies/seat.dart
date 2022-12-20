@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:movie_app_2072046/entity/detail/detail.dart';
+import 'package:movie_app_2072046/entity/transactions/transaction.dart';
 import 'package:movie_app_2072046/service/provider.dart';
 import 'package:movie_app_2072046/view/setting_page.dart';
 import 'package:movie_app_2072046/widget/seat_widget.dart';
@@ -45,6 +46,7 @@ class _SeatsState extends ConsumerState<Seats> {
     DateTime datePilihan = DateTime.now();
 
     Future addTicket() async {
+      // ticket
       final docTicket = FirebaseFirestore.instance.collection('tickets').doc();
 
       final ticket = Ticket(
@@ -57,6 +59,19 @@ class _SeatsState extends ConsumerState<Seats> {
 
       final json = ticket.toJson();
 
+      // transaction
+      final docTransaction =
+          FirebaseFirestore.instance.collection('transactions').doc();
+
+      final transaction = Transaksi(
+          amount: kursiPilihan.length * 50000,
+          type: "buy",
+          date: DateTime.now().toString(),
+          uid: user.uid,
+          movie: detail?.toJson());
+
+      final jsonTran = transaction.toJson();
+
       showDialog(
           context: context,
           barrierDismissible: false,
@@ -64,10 +79,11 @@ class _SeatsState extends ConsumerState<Seats> {
                   child: CircularProgressIndicator(
                 color: Theme.of(context).colorScheme.primary,
               )));
-      if (int.parse(dataUser!['wallet']) > kursiPilihan.length * 50000) {
+      if (int.parse(dataUser!['wallet']) >= kursiPilihan.length * 50000) {
         // tambah tiket
         await docTicket.set(json).then(
           (value) {
+            docTransaction.set(jsonTran);
             Navigator.of(context, rootNavigator: true).pop();
             AwesomeDialog(
               context: context,
@@ -92,6 +108,7 @@ class _SeatsState extends ConsumerState<Seats> {
                   .round()
                   .toString()
             }));
+            ref.read(kursiProvider.notifier).state.clear();
           },
         ).catchError((err) => log(err.toString()));
       } else {
@@ -110,6 +127,7 @@ class _SeatsState extends ConsumerState<Seats> {
             context.pushNamed('topUp');
           },
         ).show();
+        ref.read(kursiProvider.notifier).state.clear();
       }
     }
 

@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:movie_app_2072046/view/movies/home_page.dart';
 import 'package:movie_app_2072046/view/setting_page.dart';
 import 'package:movie_app_2072046/view/ticket_page.dart';
+import 'package:movie_app_2072046/view/user_page.dart';
 
 class MainPage extends StatefulWidget {
   const MainPage({super.key});
@@ -17,6 +18,7 @@ class _MainPageState extends State<MainPage> {
   final List pages = [
     const HomePage(),
     const TicketPage(),
+    const UserPage(),
     const SettingPage(),
   ];
 
@@ -38,6 +40,10 @@ class _MainPageState extends State<MainPage> {
           BottomNavigationBarItem(
             icon: Icon(Icons.my_library_books_rounded),
             label: "My Ticket",
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.person, size: 28),
+            label: "User",
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.settings),

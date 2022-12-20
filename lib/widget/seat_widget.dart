@@ -42,7 +42,7 @@ class _SeatWidgetState extends ConsumerState<SeatWidget> {
         width: MediaQuery.of(context).size.width / 10,
         height: MediaQuery.of(context).size.width / 10,
         decoration: BoxDecoration(
-          color: widget.isSelected
+          color: widget.isSelected || kursi.contains(widget.kode)
               ? Theme.of(context).colorScheme.primary
               : widget.isReserved
                   ? Theme.of(context).colorScheme.primary

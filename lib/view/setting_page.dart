@@ -4,14 +4,20 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
+import 'package:movie_app_2072046/service/provider.dart';
 import 'package:movie_app_2072046/widget/user_widget.dart';
 import 'package:settings_ui/settings_ui.dart';
 
-class SettingPage extends ConsumerWidget {
+class SettingPage extends ConsumerStatefulWidget {
   const SettingPage({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<SettingPage> createState() => _SettingPageState();
+}
+
+class _SettingPageState extends ConsumerState<SettingPage> {
+  @override
+  Widget build(BuildContext context) {
     final formKey = GlobalKey<FormState>();
     final TextEditingController controllerUsername = TextEditingController();
     final TextEditingController controllerPassword = TextEditingController();
@@ -30,7 +36,6 @@ class SettingPage extends ConsumerWidget {
       body: SettingsList(
         darkTheme: SettingsThemeData(settingsListBackground: bacColor),
         sections: [
-          const CustomSettingsSection(child: Center(child: UserWidget())),
           SettingsSection(
             title: const Text("Setting"),
             tiles: [
@@ -68,7 +73,6 @@ class SettingPage extends ConsumerWidget {
                                   return null;
                                 },
                                 maxLines: 1,
-                                obscureText: true,
                                 decoration: InputDecoration(
                                   hintText: 'Masukan username baru anda',
                                   border: OutlineInputBorder(
@@ -85,7 +89,14 @@ class SettingPage extends ConsumerWidget {
                             isFixedHeight: false,
                             text: 'Save',
                             pressEvent: () {
-                              if (formKey.currentState!.validate()) {}
+                              if (formKey.currentState!.validate()) {
+                                setState(() {
+                                  ref.read(updateUserProvider(
+                                      {'username': controllerUsername.text}));
+                                  ref.read(getUserProvider);
+                                  dialog.dismiss();
+                                });
+                              }
                             },
                           )
                         ],
@@ -149,7 +160,49 @@ class SettingPage extends ConsumerWidget {
                             isFixedHeight: false,
                             text: 'Save',
                             pressEvent: () {
-                              if (formKey.currentState!.validate()) {}
+                              if (formKey.currentState!.validate()) {
+                                setState(() {
+                                  try {
+                                    FirebaseAuth.instance.currentUser
+                                        ?.updatePassword(
+                                            controllerPassword.text)
+                                        .then((value) {
+                                      AwesomeDialog(
+                                        context: context,
+                                        headerAnimationLoop: false,
+                                        dialogType: DialogType.success,
+                                        showCloseIcon: true,
+                                        title: 'Success',
+                                        desc:
+                                            "Update Password Berhasil, silahkan login kembali",
+                                        btnOkOnPress: () {
+                                          FirebaseAuth.instance.signOut().then(
+                                              (value) =>
+                                                  context.goNamed('signIn'));
+                                        },
+                                        btnOkIcon: Icons.check_circle,
+                                        onDismissCallback: (type) {
+                                          debugPrint(
+                                              'Dialog Dissmiss from callback $type');
+                                        },
+                                      ).show();
+                                    });
+                                  } catch (e) {
+                                    AwesomeDialog(
+                                      context: context,
+                                      dialogType: DialogType.warning,
+                                      headerAnimationLoop: false,
+                                      animType: AnimType.bottomSlide,
+                                      title: 'Failed',
+                                      desc: 'Error update password $e',
+                                      buttonsTextStyle:
+                                          const TextStyle(color: Colors.black),
+                                      showCloseIcon: true,
+                                      btnOkOnPress: () {},
+                                    ).show();
+                                  }
+                                });
+                              }
                             },
                           )
                         ],

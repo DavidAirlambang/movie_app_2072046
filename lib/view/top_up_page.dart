@@ -1,12 +1,15 @@
 import 'dart:developer';
 
 import 'package:awesome_dialog/awesome_dialog.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:movie_app_2072046/service/provider.dart';
 import 'package:syncfusion_flutter_sliders/sliders.dart';
 
+import '../entity/transactions/transaction.dart';
 import '../widget/user_widget.dart';
 
 class TopUp extends ConsumerStatefulWidget {
@@ -32,6 +35,21 @@ class _TopUpState extends ConsumerState<TopUp> {
 
   @override
   Widget build(BuildContext context) {
+    Future createTransaction() async {
+      final docTransaction =
+          FirebaseFirestore.instance.collection('transactions').doc();
+
+      final transaction = Transaksi(
+        amount: topUped.round(),
+        type: "Top Up",
+        date: DateTime.now().toString(),
+        uid: FirebaseAuth.instance.currentUser!.uid,
+      );
+      final jsonTran = transaction.toJson();
+
+      await docTransaction.set(jsonTran);
+    }
+
     final dataUser = ref.watch(userProvider);
     return Scaffold(
       bottomSheet: Container(
@@ -46,22 +64,36 @@ class _TopUpState extends ConsumerState<TopUp> {
                     .toString()
               }));
             });
-            AwesomeDialog(
-              context: context,
-              headerAnimationLoop: false,
-              dialogType: DialogType.success,
-              showCloseIcon: true,
-              title: 'Success',
-              desc: "Top Up Berhasil",
-              btnOkOnPress: () {
-                context.pop();
+
+            showDialog(
+                context: context,
+                barrierDismissible: false,
+                builder: (context) => Center(
+                        child: CircularProgressIndicator(
+                      color: Theme.of(context).colorScheme.primary,
+                    )));
+
+            createTransaction().then(
+              (value) {
+                Navigator.of(context, rootNavigator: true).pop();
+                AwesomeDialog(
+                  context: context,
+                  headerAnimationLoop: false,
+                  dialogType: DialogType.success,
+                  showCloseIcon: true,
+                  title: 'Success',
+                  desc: "Top Up Berhasil",
+                  btnOkOnPress: () {
+                    context.pop();
+                  },
+                  btnOkIcon: Icons.check_circle,
+                  onDismissCallback: (type) {
+                    debugPrint('Dialog Dissmiss from callback $type');
+                  },
+                ).show();
+                ref.read(getUserProvider);
               },
-              btnOkIcon: Icons.check_circle,
-              onDismissCallback: (type) {
-                debugPrint('Dialog Dissmiss from callback $type');
-              },
-            ).show();
-            ref.read(getUserProvider);
+            );
           },
           style: ElevatedButton.styleFrom(
             backgroundColor: Theme.of(context).colorScheme.primary,
