@@ -22,7 +22,7 @@ Transaksi _$TransaksiFromJson(Map<String, dynamic> json) {
 mixin _$Transaksi {
   int? get amount => throw _privateConstructorUsedError;
   String? get type => throw _privateConstructorUsedError;
-  String? get date => throw _privateConstructorUsedError;
+  DateTime? get date => throw _privateConstructorUsedError;
   String? get uid => throw _privateConstructorUsedError;
   Map<String, dynamic>? get movie => throw _privateConstructorUsedError;
 
@@ -40,7 +40,7 @@ abstract class $TransaksiCopyWith<$Res> {
   $Res call(
       {int? amount,
       String? type,
-      String? date,
+      DateTime? date,
       String? uid,
       Map<String, dynamic>? movie});
 }
@@ -76,7 +76,7 @@ class _$TransaksiCopyWithImpl<$Res, $Val extends Transaksi>
       date: freezed == date
           ? _value.date
           : date // ignore: cast_nullable_to_non_nullable
-              as String?,
+              as DateTime?,
       uid: freezed == uid
           ? _value.uid
           : uid // ignore: cast_nullable_to_non_nullable
@@ -99,7 +99,7 @@ abstract class _$$_TransaksiCopyWith<$Res> implements $TransaksiCopyWith<$Res> {
   $Res call(
       {int? amount,
       String? type,
-      String? date,
+      DateTime? date,
       String? uid,
       Map<String, dynamic>? movie});
 }
@@ -133,7 +133,7 @@ class __$$_TransaksiCopyWithImpl<$Res>
       date: freezed == date
           ? _value.date
           : date // ignore: cast_nullable_to_non_nullable
-              as String?,
+              as DateTime?,
       uid: freezed == uid
           ? _value.uid
           : uid // ignore: cast_nullable_to_non_nullable
@@ -165,7 +165,7 @@ class _$_Transaksi implements _Transaksi {
   @override
   final String? type;
   @override
-  final String? date;
+  final DateTime? date;
   @override
   final String? uid;
   final Map<String, dynamic>? _movie;
@@ -217,7 +217,7 @@ abstract class _Transaksi implements Transaksi {
   const factory _Transaksi(
       {required final int? amount,
       required final String? type,
-      required final String? date,
+      required final DateTime? date,
       required final String? uid,
       final Map<String, dynamic>? movie}) = _$_Transaksi;
 
@@ -229,7 +229,7 @@ abstract class _Transaksi implements Transaksi {
   @override
   String? get type;
   @override
-  String? get date;
+  DateTime? get date;
   @override
   String? get uid;
   @override

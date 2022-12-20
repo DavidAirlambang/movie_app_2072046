@@ -42,7 +42,7 @@ class _TopUpState extends ConsumerState<TopUp> {
       final transaction = Transaksi(
         amount: topUped.round(),
         type: "Top Up",
-        date: DateTime.now().toString(),
+        date: DateTime.now(),
         uid: FirebaseAuth.instance.currentUser!.uid,
       );
       final jsonTran = transaction.toJson();

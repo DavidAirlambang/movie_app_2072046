@@ -1,6 +1,5 @@
 import 'dart:developer';
 
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
@@ -8,8 +7,6 @@ import 'package:movie_app_2072046/entity/detail/detail.dart';
 import 'package:movie_app_2072046/entity/transactions/transaction.dart';
 import 'package:movie_app_2072046/service/transaction_provider.dart';
 import 'package:movie_app_2072046/widget/user_widget.dart';
-
-import '../repository/repository.dart';
 
 class UserPage extends ConsumerStatefulWidget {
   const UserPage({super.key});
@@ -104,7 +101,7 @@ class TransactionItem extends StatelessWidget {
     }
 
     return Container(
-      padding: const EdgeInsets.only(left: 20, right: 20, top: 20),
+      padding: const EdgeInsets.only(left: 20, right: 20, top: 10),
       width: MediaQuery.of(context).size.width,
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -117,7 +114,7 @@ class TransactionItem extends StatelessWidget {
                 Container(),
                 SizedBox(
                   width: 180,
-                  height: 45,
+                  height: 55,
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,

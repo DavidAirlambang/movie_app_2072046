@@ -9,7 +9,7 @@ class Transaksi with _$Transaksi {
   const factory Transaksi(
       {required int? amount,
       required String? type,
-      required String? date,
+      required DateTime? date,
       required String? uid,
       Map<String, dynamic>? movie}) = _Transaksi;
 

@@ -66,7 +66,7 @@ class _SeatsState extends ConsumerState<Seats> {
       final transaction = Transaksi(
           amount: kursiPilihan.length * 50000,
           type: "buy",
-          date: DateTime.now().toString(),
+          date: DateTime.now(),
           uid: user.uid,
           movie: detail?.toJson());
 
