@@ -39,6 +39,7 @@ class TicketPage extends ConsumerWidget {
                   itemCount: data.length,
                   itemBuilder: (context, index) {
                     final movie = read?[index].movie;
+
                     MovieDetail movieTicket = MovieDetail.fromJson(movie!);
                     return Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 16),

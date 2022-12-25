@@ -36,12 +36,28 @@ final updateUserProvider = FutureProvider.family(
   },
 );
 
+// edit password
+final editPassword = FutureProvider(
+  (ref) {
+    final firebase = FirebaseAuth.instance;
+    final dataUser = ref.read(userProvider);
+
+    final email = dataUser!['email'];
+    final password = dataUser['password'];
+
+    return firebase.signOut().then((value) {
+      firebase.signInWithEmailAndPassword(email: email, password: password);
+    });
+  },
+);
+
 /// MOVIE PROVIDER
 // Ambil Movie Service
 final movieProvider = Provider<MovieService>((ref) => MovieService());
 
 // ambil detail dari movie -> masukin selected
-final movieDetailProvider = FutureProvider.family<MovieDetail?, int>(
+final movieDetailProvider =
+    FutureProvider.autoDispose.family<MovieDetail?, int>(
   (ref, id) async {
     final data = ref.watch(movieProvider).getMovieDetail(id);
     ref.watch(selectedMovie.notifier).state = await data;

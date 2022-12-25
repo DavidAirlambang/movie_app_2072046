@@ -2,153 +2,184 @@ import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:intl/intl.dart';
-import 'package:movie_app_2072046/entity/detail/detail.dart';
-import 'package:movie_app_2072046/entity/transactions/transaction.dart';
-import 'package:movie_app_2072046/service/transaction_provider.dart';
-import 'package:movie_app_2072046/widget/user_widget.dart';
+import 'package:go_router/go_router.dart';
 
-class UserPage extends ConsumerStatefulWidget {
-  const UserPage({super.key});
+import '../service/provider.dart';
+import '../service/transaction_provider.dart';
+import '../widget/transaction_widget.dart';
+import '../widget/user_widget.dart';
+
+class UserProfilePage extends ConsumerStatefulWidget {
+  const UserProfilePage({super.key});
 
   @override
-  ConsumerState<UserPage> createState() => _UserPageState();
+  ConsumerState<UserProfilePage> createState() => _UserProfilePageState();
 }
 
-class _UserPageState extends ConsumerState<UserPage> {
+class _UserProfilePageState extends ConsumerState<UserProfilePage> {
   @override
   Widget build(BuildContext context) {
     // riverpod
     final data = ref.watch(transactionStreamProvider);
+    final dataUser = ref.watch(userProvider);
 
     return Scaffold(
       backgroundColor: Theme.of(context).colorScheme.background,
-      // kartu
-      body: ListView(
-        children: [
-          Row(mainAxisAlignment: MainAxisAlignment.center, children: const [
-            UserWidget(),
-          ]),
-          Container(
-              margin: const EdgeInsets.only(top: 30),
-              width: MediaQuery.of(context).size.width * 1,
-              height: MediaQuery.of(context).size.height * 0.81,
-              decoration: BoxDecoration(
-                  color:
-                      Theme.of(context).colorScheme.secondary.withOpacity(0.5),
-                  borderRadius: const BorderRadius.only(
-                      topLeft: Radius.circular(50),
-                      topRight: Radius.circular(50))),
-              child: Column(
-                children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Container(
-                        margin: const EdgeInsets.only(left: 20, top: 30),
-                        child: Text(
-                          "Transactions History",
-                          style: TextStyle(
-                              fontSize: 20,
-                              fontWeight: FontWeight.w500,
-                              color: Theme.of(context).colorScheme.primary),
-                        ),
-                      ),
-                    ],
-                  ),
-                  data.when(
-                    data: (data) {
-                      return SizedBox(
-                        height: 400,
-                        child: ListView.builder(
-                          itemCount: data.length,
-                          itemBuilder: (context, index) {
-                            return TransactionItem(objek: data[index]);
-                          },
-                        ),
-                      );
-                    },
-                    error: (error, stackTrace) {
-                      log(error.toString());
-                      return const SizedBox();
-                    },
-                    loading: () {
-                      return const Center(child: CircularProgressIndicator());
-                    },
-                  )
-                ],
-              ))
-        ],
+      appBar: AppBar(
+        title: const Text(
+          "User",
+          style: TextStyle(color: Color(0xFFf4C10F), fontSize: 22),
+        ),
+        centerTitle: true,
+        backgroundColor: Theme.of(context).colorScheme.background,
       ),
-    );
-  }
-}
-
-class TransactionItem extends StatelessWidget {
-  final Transaksi objek;
-  const TransactionItem({
-    Key? key,
-    required this.objek,
-  }) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    final type = objek.type;
-    MovieDetail? movie;
-
-    if (type == "buy") {
-      movie = MovieDetail.fromJson(objek.movie!);
-    }
-
-    return Container(
-      padding: const EdgeInsets.only(left: 20, right: 20, top: 10),
-      width: MediaQuery.of(context).size.width,
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          SizedBox(
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+      body: ListView(children: [
+        Container(
+          padding: const EdgeInsets.all(16),
+          child: Column(children: [
+            Stack(
               children: [
-                Container(),
                 SizedBox(
-                  width: 180,
-                  height: 55,
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    children: [
-                      Text(
-                        (type == "buy") ? movie!.title.toString() : "Top Up",
-                        style: const TextStyle(
-                          color: Colors.white,
-                          fontSize: 16,
-                        ),
+                  width: 120,
+                  height: 120,
+                  child:
+                      // ganti image nanti
+                      Container(
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(100),
+                      color: Colors.white,
+                    ),
+                  ),
+                ),
+                Positioned(
+                  bottom: 0,
+                  right: 0,
+                  child: Container(
+                    width: 35,
+                    height: 35,
+                    decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(100),
+                        color: Theme.of(context).colorScheme.primary),
+                    child: IconButton(
+                      onPressed: () {
+                        context.pushNamed('userEdit');
+                      },
+                      color: Colors.black,
+                      icon: const Icon(
+                        Icons.edit,
+                        color: Colors.black,
+                        size: 20,
                       ),
-                      Text(
-                        DateFormat('E, dd-MM-yyyy hh:mm:ss')
-                            .format(DateTime.parse(objek.date.toString())),
-                        style: const TextStyle(
-                            color: Colors.white60, fontSize: 12),
-                      ),
-                    ],
+                    ),
                   ),
                 )
               ],
             ),
-          ),
-          Text(
-            (type == "buy")
-                ? '- ${CurrencyFormat.convertToIdr(objek.amount, 0)}'
-                : '+ ${CurrencyFormat.convertToIdr(objek.amount, 0)}',
-            style: TextStyle(
-                fontWeight: FontWeight.bold,
-                fontSize: 16,
-                color: (type == "buy") ? Colors.red : Colors.green),
-          ),
-        ],
-      ),
+            const SizedBox(height: 10),
+            Text(
+              dataUser!['username'],
+              style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+            ),
+            const SizedBox(height: 5),
+            Text(
+              dataUser['email'],
+              style: const TextStyle(fontSize: 16, color: Colors.white60),
+            ),
+            const SizedBox(height: 10),
+            const Divider(),
+
+            // saldo
+
+            const SizedBox(height: 10),
+            Container(
+              height: 70,
+              decoration: BoxDecoration(
+                  color:
+                      Theme.of(context).colorScheme.secondary.withOpacity(0.5),
+                  borderRadius: const BorderRadius.all(Radius.circular(8))),
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 16),
+                child: Row(
+                  children: [
+                    Icon(
+                      Icons.wallet,
+                      size: 30,
+                      color: Theme.of(context).colorScheme.primary,
+                    ),
+                    const SizedBox(width: 10),
+                    Text(
+                      CurrencyFormat.convertToIdr(
+                          int.tryParse(dataUser['wallet']) ?? 0, 2),
+                      style: const TextStyle(
+                          fontSize: 22, fontWeight: FontWeight.bold),
+                    ),
+                    const Spacer(),
+                    Container(
+                      width: 40,
+                      height: 40,
+                      decoration: BoxDecoration(
+                          color: Theme.of(context).colorScheme.primary,
+                          borderRadius:
+                              const BorderRadius.all(Radius.circular(100))),
+                      child: IconButton(
+                        splashColor: Colors.transparent,
+                        onPressed: () {
+                          context.pushNamed('topUp');
+                        },
+                        icon: Icon(
+                          Icons.add,
+                          size: 25,
+                          color: Theme.of(context).colorScheme.inversePrimary,
+                        ),
+                      ),
+                    )
+                  ],
+                ),
+              ),
+            ),
+
+            // history
+            const SizedBox(height: 10),
+            const Divider(),
+            Container(
+                margin: const EdgeInsets.only(top: 10),
+                width: MediaQuery.of(context).size.width * 1,
+                decoration: BoxDecoration(
+                    color: Theme.of(context)
+                        .colorScheme
+                        .secondary
+                        .withOpacity(0.5),
+                    borderRadius: const BorderRadius.all(Radius.circular(8))),
+                child: Column(
+                  children: [
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    ),
+                    data.when(
+                      data: (data) {
+                        return SizedBox(
+                          height: 400,
+                          child: ListView.builder(
+                            itemCount: data.length,
+                            itemBuilder: (context, index) {
+                              return TransactionItem(objek: data[index]);
+                            },
+                          ),
+                        );
+                      },
+                      error: (error, stackTrace) {
+                        log(error.toString());
+                        return const SizedBox();
+                      },
+                      loading: () {
+                        return const Center(child: CircularProgressIndicator());
+                      },
+                    )
+                  ],
+                ))
+          ]),
+        )
+      ]),
     );
   }
 }

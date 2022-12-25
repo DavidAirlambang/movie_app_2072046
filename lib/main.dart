@@ -5,6 +5,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:movie_app_2072046/view/top_up_page.dart';
+import 'package:movie_app_2072046/view/user_edit_page.dart';
 import 'package:movie_app_2072046/widget/notif.dart';
 import 'package:movie_app_2072046/view/login_signUp/login_page.dart';
 
@@ -111,6 +112,11 @@ class _MyAppState extends ConsumerState<MyApp> {
                 path: 'topUp',
                 name: 'topUp',
                 builder: (context, state) => const TopUp(),
+              ),
+              GoRoute(
+                path: 'userEdit',
+                name: 'userEdit',
+                builder: (context, state) => const UserEdit(),
               ),
             ]),
       ],

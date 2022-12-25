@@ -32,6 +32,7 @@ class _SeatsState extends ConsumerState<Seats> {
     final jamPilihan = ref.watch(jamProvider);
     final kursiPilihan = ref.watch(kursiProvider);
     final detail = ref.watch(selectedMovie);
+
     final user = ref.watch(userNow);
     final dataUser = ref.watch(userProvider);
     log(user!.uid.toString());
