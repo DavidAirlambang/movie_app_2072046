@@ -1,4 +1,3 @@
-import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -6,6 +5,8 @@ import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 import 'package:movie_app_2072046/service/provider.dart';
 import 'package:settings_ui/settings_ui.dart';
+
+import '../widget/notif.dart';
 
 class UserEdit extends ConsumerStatefulWidget {
   const UserEdit({super.key});
@@ -15,12 +16,28 @@ class UserEdit extends ConsumerStatefulWidget {
 }
 
 class _UserEditState extends ConsumerState<UserEdit> {
+  // untuk edit
+  var editable = false;
+  DateTime? selectedDate;
+
+  // untuk form
+  final _formKey = GlobalKey<FormState>();
+  final TextEditingController _controllerUsername = TextEditingController();
+  final TextEditingController _controllerAddress = TextEditingController();
+  final TextEditingController _controllerDate = TextEditingController();
+
   @override
   Widget build(BuildContext context) {
-    final formKey = GlobalKey<FormState>();
-    final TextEditingController controllerUsername = TextEditingController();
-    final TextEditingController controllerPassword = TextEditingController();
+    //riverpod
     final dataUser = ref.watch(userProvider);
+    _controllerUsername.text = dataUser!['username'];
+    _controllerAddress.text = dataUser['address'];
+
+    // _controllerDate.text = DateFormat('dd MMMM yyyy')
+    //     .format((dataUser['birth']).toDate())
+    //     .toString();
+
+    // color
     Color bacColor = Theme.of(context).colorScheme.background;
     return Scaffold(
       backgroundColor: Theme.of(context).colorScheme.background,
@@ -85,7 +102,7 @@ class _UserEditState extends ConsumerState<UserEdit> {
                         ),
                         const SizedBox(height: 20),
                         Text(
-                          dataUser!['username'],
+                          dataUser['username'],
                           style: const TextStyle(
                               fontSize: 20, fontWeight: FontWeight.bold),
                         ),
@@ -98,213 +115,186 @@ class _UserEditState extends ConsumerState<UserEdit> {
                   ),
                 ),
               ),
-              SettingsTile.navigation(
-                onPressed: (context) {
-                  late AwesomeDialog dialog;
-                  dialog = AwesomeDialog(
-                    dialogBackgroundColor: Colors.grey[800],
-                    context: context,
-                    dialogType: DialogType.noHeader,
-                    keyboardAware: true,
-                    body: Padding(
-                      padding: const EdgeInsets.all(8),
-                      child: Column(
-                        children: [
-                          Text(
-                            'Ganti Username',
-                            style: Theme.of(context).textTheme.headline6,
-                          ),
-                          const SizedBox(height: 20),
-                          Material(
-                            elevation: 0,
-                            color: Colors.grey[800],
-                            child: Form(
-                              key: formKey,
-                              child: TextFormField(
-                                autofocus: true,
-                                controller: controllerUsername,
-                                validator: (value) {
-                                  if (value == null || value.isEmpty) {
-                                    return 'Masukan username baru anda';
-                                  }
-                                  return null;
-                                },
-                                maxLines: 1,
-                                decoration: InputDecoration(
-                                  hintText: 'Masukan username baru anda',
-                                  border: OutlineInputBorder(
-                                    borderRadius: BorderRadius.circular(10),
-                                  ),
-                                ),
-                              ),
+              CustomSettingsTile(
+                  child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 16),
+                child: Form(
+                    key: _formKey,
+                    child: Column(
+                      children: [
+                        TextFormField(
+                          enabled: editable ? true : false,
+                          controller: _controllerUsername,
+                          validator: (value) {
+                            if (value == null || value.isEmpty) {
+                              return 'Masukan username anda';
+                            }
+                            return null;
+                          },
+                          maxLines: 1,
+                          decoration: InputDecoration(
+                            prefixIcon: const Icon(Icons.person),
+                            hintText: 'Masukan Username anda',
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(10),
                             ),
                           ),
-                          const SizedBox(height: 10),
-                          AnimatedButton(
-                            borderRadius:
-                                const BorderRadius.all(Radius.circular(8)),
-                            isFixedHeight: false,
-                            text: 'Save',
-                            pressEvent: () {
-                              if (formKey.currentState!.validate()) {
-                                setState(() {
-                                  ref.read(updateUserProvider(
-                                      {'username': controllerUsername.text}));
-                                  ref.read(getUserProvider);
-                                  dialog.dismiss();
-                                });
-                              }
-                            },
-                          )
-                        ],
-                      ),
-                    ),
-                  )..show();
-                },
-                trailing: const Icon(Icons.arrow_forward_ios_rounded, size: 20),
-                leading: const Icon(Icons.person, size: 30),
-                title: const Text('Change Username',
-                    style: TextStyle(fontSize: 16)),
-              ),
-              SettingsTile.navigation(
-                onPressed: (context) {
-                  late AwesomeDialog dialog;
-                  dialog = AwesomeDialog(
-                    dialogBackgroundColor: Colors.grey[800],
-                    context: context,
-                    dialogType: DialogType.noHeader,
-                    keyboardAware: true,
-                    body: Padding(
-                      padding: const EdgeInsets.all(8),
-                      child: Column(
-                        children: [
-                          Text(
-                            'Ganti Password',
-                            style: Theme.of(context).textTheme.headline6,
-                          ),
-                          const SizedBox(
-                            height: 20,
-                          ),
-                          Material(
-                            elevation: 0,
-                            color: Colors.grey[800],
-                            child: Form(
-                              key: formKey,
-                              child: TextFormField(
-                                autofocus: true,
-                                controller: controllerPassword,
-                                validator: (value) {
-                                  if (value == null || value.isEmpty) {
-                                    return 'Masukan password baru anda';
-                                  }
-                                  return null;
-                                },
-                                maxLines: 1,
-                                obscureText: true,
-                                decoration: InputDecoration(
-                                  hintText: 'Masukan password baru anda',
-                                  border: OutlineInputBorder(
-                                    borderRadius: BorderRadius.circular(10),
-                                  ),
-                                ),
-                              ),
+                        ),
+                        const SizedBox(height: 10),
+                        TextFormField(
+                          enabled: editable ? true : false,
+                          controller: _controllerAddress,
+                          validator: (value) {
+                            if (value == null || value.isEmpty) {
+                              return 'Masukan address anda';
+                            }
+                            return null;
+                          },
+                          maxLines: 1,
+                          decoration: InputDecoration(
+                            prefixIcon: const Icon(Icons.home_rounded),
+                            hintText: 'Masukan Address anda',
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(10),
                             ),
                           ),
-                          const SizedBox(height: 10),
-                          AnimatedButton(
-                            borderRadius:
-                                const BorderRadius.all(Radius.circular(8)),
-                            isFixedHeight: false,
-                            text: 'Save',
-                            pressEvent: () {
-                              if (formKey.currentState!.validate()) {
-                                setState(() {
-                                  try {
-                                    final firebase = FirebaseAuth.instance;
-                                    final dataUser = ref.read(userProvider);
+                        ),
+                        const SizedBox(height: 10),
+                        TextFormField(
+                          enabled: editable ? true : false,
+                          onTap: () async {
+                            DateTime? pickedDate = await showDatePicker(
+                                context: context,
+                                initialDate: DateTime.now(),
+                                firstDate: DateTime(2000),
+                                lastDate: DateTime(2101));
 
-                                    final email = dataUser!['email'];
-                                    final password = dataUser['password'];
+                            if (pickedDate != null) {
+                              String formattedDate =
+                                  DateFormat('dd MMMM yyyy').format(pickedDate);
 
-                                    // firebase.signOut().then((value) {
-                                    //   firebase.signInWithEmailAndPassword(
-                                    //       email: email, password: password);
-                                    // }).then((value) {
-                                    showDialog(
-                                        context: context,
-                                        barrierDismissible: false,
-                                        builder: (context) => Center(
-                                                child:
-                                                    CircularProgressIndicator(
-                                              color: Theme.of(context)
-                                                  .colorScheme
-                                                  .primary,
-                                            )));
+                              setState(() {
+                                _controllerDate.text = formattedDate;
+                                selectedDate = pickedDate;
+                              });
+                            } else {
+                              print("Date is not selected");
+                            }
+                          },
+                          controller: _controllerDate,
+                          validator: (value) {
+                            if (value == null || value.isEmpty) {
+                              return 'Masukan date of birth anda';
+                            }
+                            return null;
+                          },
+                          maxLines: 1,
+                          decoration: InputDecoration(
+                            hintText: 'Masukan date of birth anda',
+                            prefixIcon: const Icon(Icons.date_range_rounded),
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(10),
+                            ),
+                          ),
+                        ),
+                        const SizedBox(
+                          height: 20,
+                        ),
+                        Container(
+                          alignment: Alignment.topRight,
+                          child: ElevatedButton(
+                            onPressed:
 
-                                    firebase.currentUser
-                                        ?.updatePassword(
-                                            controllerPassword.text)
-                                        .then((value) {
-                                      Navigator.of(context, rootNavigator: true)
-                                          .pop();
-                                      AwesomeDialog(
-                                        context: context,
-                                        headerAnimationLoop: false,
-                                        dialogType: DialogType.success,
-                                        showCloseIcon: true,
-                                        title: 'Success',
-                                        desc:
-                                            "Update Password Berhasil, silahkan login kembali",
-                                        btnOkOnPress: () {
-                                          FirebaseAuth.instance.signOut().then(
-                                              (value) =>
-                                                  context.goNamed('signIn'));
-                                        },
-                                        btnOkIcon: Icons.check_circle,
-                                        onDismissCallback: (type) {
-                                          debugPrint(
-                                              'Dialog Dissmiss from callback $type');
-                                        },
-                                      ).show();
-                                    });
-                                    //
-                                    // });
-                                  } catch (e) {
-                                    AwesomeDialog(
-                                      context: context,
-                                      dialogType: DialogType.warning,
-                                      headerAnimationLoop: false,
-                                      animType: AnimType.bottomSlide,
-                                      title: 'Failed',
-                                      desc: 'Error update password $e',
-                                      buttonsTextStyle:
-                                          const TextStyle(color: Colors.black),
-                                      showCloseIcon: true,
-                                      btnOkOnPress: () {},
-                                    ).show();
-                                  }
-                                });
-                              }
-                            },
-                          )
-                        ],
-                      ),
-                    ),
-                  )..show();
-                },
-                trailing: const Icon(Icons.arrow_forward_ios_rounded, size: 20),
-                leading: const Icon(Icons.password, size: 30),
-                title: const Text('Change Password',
-                    style: TextStyle(fontSize: 16)),
-              ),
+                                //edit enable
+                                editable
+                                    ? () async {
+                                        if (_formKey.currentState!.validate()) {
+                                          showDialog(
+                                              context: context,
+                                              barrierDismissible: false,
+                                              builder: (context) => Center(
+                                                      child:
+                                                          CircularProgressIndicator(
+                                                    color: Theme.of(context)
+                                                        .primaryColor,
+                                                  )));
+
+                                          try {
+                                            // update username
+                                            ref.read(updateUserProvider({
+                                              'username':
+                                                  _controllerUsername.text
+                                            }));
+                                            ref.read(getUserProvider);
+
+                                            // update address
+                                            ref.read(updateUserProvider({
+                                              'address': _controllerAddress.text
+                                            }));
+                                            ref.read(getUserProvider);
+
+                                            // update date of birth
+                                            ref.read(updateUserProvider(
+                                                {'birth': selectedDate}));
+                                            ref.read(getUserProvider);
+
+                                            Navigator.of(context,
+                                                    rootNavigator: true)
+                                                .pop();
+
+                                            setState(() {
+                                              editable = false;
+                                            });
+                                          } on FirebaseAuthException catch (e) {
+                                            Navigator.of(context,
+                                                    rootNavigator: true)
+                                                .pop();
+
+                                            Notif.showSnackBar(e.message);
+                                            FocusManager.instance.primaryFocus
+                                                ?.unfocus();
+                                          }
+                                        }
+                                      }
+                                    // edit disable
+                                    : () {
+                                        setState(() {
+                                          editable = true;
+                                          FocusScope.of(context).unfocus();
+                                        });
+                                      },
+                            style: ElevatedButton.styleFrom(
+                              padding:
+                                  const EdgeInsets.fromLTRB(40, 15, 40, 15),
+                            ),
+                            child: Text(
+                              editable ? 'Save' : 'Edit',
+                              style: const TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.white),
+                            ),
+                          ),
+                        ),
+                        const SizedBox(
+                          height: 10,
+                        ),
+                        const Divider(thickness: 1),
+                      ],
+                    )),
+              )),
+
               SettingsTile.navigation(
                 onPressed: (context) {
                   context.goNamed('signIn');
                   FirebaseAuth.instance.signOut();
                 },
-                trailing: const Icon(Icons.arrow_forward_ios_rounded, size: 20),
-                leading: const Icon(Icons.logout_rounded, size: 30),
-                title: const Text('Sign Out', style: TextStyle(fontSize: 16)),
+                leading: const Icon(
+                  Icons.logout_rounded,
+                  size: 30,
+                  color: Colors.red,
+                ),
+                title: const Text('Sign Out',
+                    style: TextStyle(fontSize: 18, color: Colors.red)),
               ),
 
               // batas
@@ -313,16 +303,5 @@ class _UserEditState extends ConsumerState<UserEdit> {
         ],
       ),
     );
-  }
-}
-
-class CurrencyFormat {
-  static String convertToIdr(dynamic number, int decimalDigit) {
-    NumberFormat currencyFormatter = NumberFormat.currency(
-      locale: 'id',
-      symbol: 'Rp ',
-      decimalDigits: decimalDigit,
-    );
-    return currencyFormatter.format(number);
   }
 }

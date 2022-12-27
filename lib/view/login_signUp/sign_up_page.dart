@@ -41,7 +41,7 @@ class _SignUpState extends ConsumerState<SignUp> {
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              const Text(
+              const Text( 
                 "Sign Up",
                 style: TextStyle(
                   fontWeight: FontWeight.bold,
