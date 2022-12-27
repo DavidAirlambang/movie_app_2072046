@@ -32,10 +32,11 @@ class _UserEditState extends ConsumerState<UserEdit> {
     final dataUser = ref.watch(userProvider);
     _controllerUsername.text = dataUser!['username'];
     _controllerAddress.text = dataUser['address'];
-
-    // _controllerDate.text = DateFormat('dd MMMM yyyy')
-    //     .format((dataUser['birth']).toDate())
-    //     .toString();
+    _controllerDate.text = editable
+        ? _controllerDate.text
+        : DateFormat('dd MMMM yyyy')
+            .format((dataUser['birth']).toDate())
+            .toString();
 
     // color
     Color bacColor = Theme.of(context).colorScheme.background;
@@ -182,6 +183,7 @@ class _UserEditState extends ConsumerState<UserEdit> {
                             }
                           },
                           controller: _controllerDate,
+                          cursorColor: Colors.transparent,
                           validator: (value) {
                             if (value == null || value.isEmpty) {
                               return 'Masukan date of birth anda';
