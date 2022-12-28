@@ -9,12 +9,12 @@ import 'package:go_router/go_router.dart';
 import 'package:movie_app_2072046/entity/detail/detail.dart';
 import 'package:movie_app_2072046/entity/transactions/transaction.dart';
 import 'package:movie_app_2072046/service/provider.dart';
-import 'package:movie_app_2072046/view/setting_page.dart';
 import 'package:movie_app_2072046/widget/seat_widget.dart';
 import 'package:movie_app_2072046/widget/time_widget.dart';
 import 'package:awesome_dialog/awesome_dialog.dart';
 
 import '../../entity/ticket/ticket.dart';
+import '../../repository/repository.dart';
 
 class Seats extends ConsumerStatefulWidget {
   const Seats({super.key});

@@ -1,3 +1,5 @@
+import 'package:intl/intl.dart';
+
 class MovieRepository {
   // akun sendiri
   static const key = "918f5ec196f2e90bdde212aba071344d";
@@ -10,4 +12,16 @@ class MovieRepository {
   static const language = 'en-US';
   static const region = 'ID';
 
+}
+
+
+class CurrencyFormat {
+  static String convertToIdr(dynamic number, int decimalDigit) {
+    NumberFormat currencyFormatter = NumberFormat.currency(
+      locale: 'id',
+      symbol: 'Rp ',
+      decimalDigits: decimalDigit,
+    );
+    return currencyFormatter.format(number);
+  }
 }

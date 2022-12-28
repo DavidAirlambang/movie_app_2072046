@@ -3,7 +3,6 @@ import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:movie_app_2072046/view/movies/home_page.dart';
 import 'package:movie_app_2072046/view/user_page.dart';
-import 'package:movie_app_2072046/view/setting_page.dart';
 import 'package:movie_app_2072046/view/ticket_page.dart';
 
 class MainPage extends StatefulWidget {
@@ -19,7 +18,6 @@ class _MainPageState extends State<MainPage> {
     const HomePage(),
     const TicketPage(),
     const UserProfilePage(),
-    const SettingPage(),
   ];
 
   @override
@@ -44,10 +42,6 @@ class _MainPageState extends State<MainPage> {
           BottomNavigationBarItem(
             icon: Icon(Icons.person, size: 28),
             label: "User",
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.settings),
-            label: "Setting",
           ),
         ],
         currentIndex: page,

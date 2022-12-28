@@ -3,7 +3,7 @@ import 'package:intl/intl.dart';
 
 import '../entity/detail/detail.dart';
 import '../entity/transactions/transaction.dart';
-import '../view/setting_page.dart';
+import '../repository/repository.dart';
 
 class TransactionItem extends StatelessWidget {
   final Transaksi objek;
