@@ -1,6 +1,10 @@
+import 'dart:io';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:movie_app_2072046/service/movie_service.dart';
 import '../entity/detail/detail.dart';
 import '../entity/ticket/ticket.dart';
@@ -23,6 +27,27 @@ final getUserProvider = FutureProvider.autoDispose(
   },
 );
 final userProvider = StateProvider<Map?>((ref) => null);
+
+// profile image
+final profileImageProvider = StateProvider<String>((ref) => " ");
+
+final updateImageProvider = FutureProvider(
+  (ref) async {
+    final image = await ImagePicker().pickImage(
+        source: ImageSource.gallery,
+        maxWidth: 512,
+        maxHeight: 512,
+        imageQuality: 30);
+
+    Reference storage =
+        FirebaseStorage.instance.ref().child('${ref.read(userNow)!.uid}.jpg');
+
+    await storage.putFile(File(image!.path));
+    storage.getDownloadURL().then((value) {
+      ref.read(updateUserProvider({'profile': value}));
+    });
+  },
+);
 
 // update user
 final updateUserProvider = FutureProvider.family(

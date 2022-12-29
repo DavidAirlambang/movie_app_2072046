@@ -42,10 +42,13 @@ class _UserProfilePageState extends ConsumerState<UserProfilePage> {
                 SizedBox(
                   width: 120,
                   height: 120,
-                  child:
-                      // ganti image nanti
-                      Container(
+                  child: Container(
                     decoration: BoxDecoration(
+                      image: DecorationImage(
+                          image: dataUser!['profile'] != null
+                              ? NetworkImage(dataUser['profile'])
+                              : const AssetImage('./assets/images/img_null.png')
+                                  as ImageProvider),
                       borderRadius: BorderRadius.circular(100),
                       color: Colors.white,
                     ),
@@ -77,7 +80,7 @@ class _UserProfilePageState extends ConsumerState<UserProfilePage> {
             ),
             const SizedBox(height: 10),
             Text(
-              dataUser!['username'],
+              dataUser['username'],
               style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: 5),

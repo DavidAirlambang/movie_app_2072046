@@ -1,7 +1,12 @@
+import 'dart:developer';
+import 'dart:io';
+
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
 import 'package:movie_app_2072046/service/provider.dart';
 import 'package:settings_ui/settings_ui.dart';
@@ -28,8 +33,40 @@ class _UserEditState extends ConsumerState<UserEdit> {
 
   @override
   Widget build(BuildContext context) {
+// profile picture
+    void pickUpLoadImage() async {
+      final image = await ImagePicker().pickImage(
+          source: ImageSource.gallery,
+          maxWidth: 215,
+          maxHeight: 215,
+          imageQuality: 20);
+
+      Reference storage =
+          FirebaseStorage.instance.ref().child('${ref.read(userNow)!.uid}.jpg');
+
+      showDialog(
+          context: context,
+          barrierDismissible: false,
+          builder: (context) => Center(
+                  child: CircularProgressIndicator(
+                color: Theme.of(context).colorScheme.primary,
+              )));
+
+      await storage.putFile(File(image!.path));
+      storage.getDownloadURL().then((value) {
+        setState(() {
+          ref.read(profileImageProvider.notifier).state = value;
+          ref.read(updateUserProvider({'profile': value}));
+          ref.read(getUserProvider);
+          Navigator.of(context, rootNavigator: true).pop();
+        });
+      });
+    }
+
     //riverpod
     final dataUser = ref.watch(userProvider);
+    final profilePic = ref.watch(profileImageProvider);
+
     _controllerUsername.text = dataUser!['username'];
     _controllerAddress.text = dataUser['address'];
     _controllerDate.text = editable
@@ -67,10 +104,20 @@ class _UserEditState extends ConsumerState<UserEdit> {
                             SizedBox(
                               width: 120,
                               height: 120,
-                              child:
-                                  // ganti image nanti
-                                  Container(
+                              child: Container(
                                 decoration: BoxDecoration(
+                                  image: DecorationImage(
+                                      // image: profilePic == " "
+                                      //     ? const AssetImage(
+                                      //             './assets/images/img_null.png')
+                                      //         as ImageProvider
+                                      //     : NetworkImage(dataUser['profile'])
+                                      image: dataUser['profile'] != null
+                                          ? NetworkImage(
+                                              dataUser['profile'].toString())
+                                          : const AssetImage(
+                                                  './assets/images/img_null.png')
+                                              as ImageProvider),
                                   borderRadius: BorderRadius.circular(100),
                                   color: Colors.white,
                                 ),
@@ -88,7 +135,7 @@ class _UserEditState extends ConsumerState<UserEdit> {
                                         Theme.of(context).colorScheme.primary),
                                 child: IconButton(
                                   onPressed: () {
-                                    context.pushNamed('userEdit');
+                                    pickUpLoadImage();
                                   },
                                   color: Colors.black,
                                   icon: const Icon(
@@ -218,7 +265,8 @@ class _UserEditState extends ConsumerState<UserEdit> {
                                                       child:
                                                           CircularProgressIndicator(
                                                     color: Theme.of(context)
-                                                        .primaryColor,
+                                                        .colorScheme
+                                                        .primary,
                                                   )));
 
                                           try {
@@ -240,12 +288,18 @@ class _UserEditState extends ConsumerState<UserEdit> {
                                                 {'birth': selectedDate}));
                                             ref.read(getUserProvider);
 
-                                            Navigator.of(context,
-                                                    rootNavigator: true)
-                                                .pop();
-
-                                            setState(() {
-                                              editable = false;
+                                            await Future.delayed(
+                                                    const Duration(seconds: 2))
+                                                .then((value) {
+                                              Navigator.of(context,
+                                                      rootNavigator: true)
+                                                  .pop();
+                                              setState(() {
+                                                editable = false;
+                                                FocusManager
+                                                    .instance.primaryFocus
+                                                    ?.unfocus();
+                                              });
                                             });
                                           } on FirebaseAuthException catch (e) {
                                             Navigator.of(context,
@@ -253,8 +307,6 @@ class _UserEditState extends ConsumerState<UserEdit> {
                                                 .pop();
 
                                             Notif.showSnackBar(e.message);
-                                            FocusManager.instance.primaryFocus
-                                                ?.unfocus();
                                           }
                                         }
                                       }
