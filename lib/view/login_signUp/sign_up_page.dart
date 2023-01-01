@@ -1,9 +1,14 @@
+import 'dart:io';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:email_validator/email_validator.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:intl/intl.dart';
 
 import '../../service/provider.dart';
 import '../../widget/notif.dart';
@@ -17,8 +22,35 @@ class SignUp extends ConsumerStatefulWidget {
 }
 
 class _SignUpState extends ConsumerState<SignUp> {
+  void pickUpLoadImage() async {
+    final image = await ImagePicker().pickImage(
+        source: ImageSource.gallery,
+        maxWidth: 215,
+        maxHeight: 215,
+        imageQuality: 20);
+
+    Reference storage = FirebaseStorage.instance.ref().child('profile.jpg');
+
+    showDialog(
+        context: context,
+        barrierDismissible: false,
+        builder: (context) => Center(
+                child: CircularProgressIndicator(
+              color: Theme.of(context).colorScheme.primary,
+            )));
+
+    await storage.putFile(File(image!.path));
+    storage.getDownloadURL().then((value) {
+      setState(() {
+        ref.read(profileImageProvider.notifier).state = value;
+        Navigator.of(context, rootNavigator: true).pop();
+      });
+    });
+  }
+
   final _formKey = GlobalKey<FormState>();
   var rememberValue = false;
+  DateTime? selectedDate;
 
   // firebase
   String? errorMessage = '';
@@ -26,12 +58,17 @@ class _SignUpState extends ConsumerState<SignUp> {
 
   final TextEditingController _controllerUsername = TextEditingController();
   final TextEditingController _controllerEmail = TextEditingController();
+  final TextEditingController _controllerAddress = TextEditingController();
+  final TextEditingController _controllerDate = TextEditingController();
   final TextEditingController _controllerPassword = TextEditingController();
   final TextEditingController _controllerPasswordConfirmation =
       TextEditingController();
 
   @override
   Widget build(BuildContext context) {
+    //riverpod
+    final profile = ref.watch(profileImageProvider);
+
     return Scaffold(
       resizeToAvoidBottomInset: false,
       backgroundColor: Theme.of(context).colorScheme.background,
@@ -41,7 +78,7 @@ class _SignUpState extends ConsumerState<SignUp> {
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              const Text( 
+              const Text(
                 "Sign Up",
                 style: TextStyle(
                   fontWeight: FontWeight.bold,
@@ -49,8 +86,51 @@ class _SignUpState extends ConsumerState<SignUp> {
                 ),
               ),
               const SizedBox(
-                height: 60,
+                height: 20,
               ),
+              Stack(
+                children: [
+                  SizedBox(
+                    width: 120,
+                    height: 120,
+                    child: Container(
+                      decoration: BoxDecoration(
+                        image: DecorationImage(
+                            image: profile != " "
+                                ? NetworkImage(profile)
+                                : const AssetImage(
+                                        './assets/images/img_null.png')
+                                    as ImageProvider),
+                        borderRadius: BorderRadius.circular(100),
+                        color: Colors.white,
+                      ),
+                    ),
+                  ),
+                  Positioned(
+                    bottom: 0,
+                    right: 0,
+                    child: Container(
+                      width: 35,
+                      height: 35,
+                      decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(100),
+                          color: Theme.of(context).colorScheme.primary),
+                      child: IconButton(
+                        onPressed: () {
+                          pickUpLoadImage();
+                        },
+                        color: Colors.black,
+                        icon: const Icon(
+                          Icons.camera_alt,
+                          color: Colors.black,
+                          size: 20,
+                        ),
+                      ),
+                    ),
+                  )
+                ],
+              ),
+              const SizedBox(height: 20),
               Form(
                   key: _formKey,
                   child: Column(
@@ -72,7 +152,7 @@ class _SignUpState extends ConsumerState<SignUp> {
                           ),
                         ),
                       ),
-                      const SizedBox(height: 20),
+                      const SizedBox(height: 10),
                       TextFormField(
                         controller: _controllerEmail,
                         validator: (value) => EmailValidator.validate(value!)
@@ -88,7 +168,65 @@ class _SignUpState extends ConsumerState<SignUp> {
                         ),
                       ),
                       const SizedBox(
-                        height: 20,
+                        height: 10,
+                      ),
+                      TextFormField(
+                        controller: _controllerAddress,
+                        validator: (value) {
+                          if (value == null || value.isEmpty) {
+                            return 'Masukan address anda';
+                          }
+                          return null;
+                        },
+                        maxLines: 1,
+                        decoration: InputDecoration(
+                          prefixIcon: const Icon(Icons.home_rounded),
+                          hintText: 'Masukan Address anda',
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                        ),
+                      ),
+                      const SizedBox(height: 10),
+                      TextFormField(
+                        onTap: () async {
+                          DateTime? pickedDate = await showDatePicker(
+                              context: context,
+                              initialDate: DateTime.now(),
+                              firstDate: DateTime(2000),
+                              lastDate: DateTime(2101));
+
+                          if (pickedDate != null) {
+                            String formattedDate =
+                                DateFormat('dd MMMM yyyy').format(pickedDate);
+
+                            setState(() {
+                              _controllerDate.text = formattedDate;
+                              selectedDate = pickedDate;
+                            });
+                          } else {
+                            print("Date is not selected");
+                          }
+                        },
+                        controller: _controllerDate,
+                        cursorColor: Colors.transparent,
+                        validator: (value) {
+                          if (value == null || value.isEmpty) {
+                            return 'Masukan date of birth anda';
+                          }
+                          return null;
+                        },
+                        maxLines: 1,
+                        decoration: InputDecoration(
+                          hintText: 'Masukan date of birth anda',
+                          prefixIcon: const Icon(Icons.date_range_rounded),
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                        ),
+                      ),
+                      const SizedBox(
+                        height: 10,
                       ),
                       TextFormField(
                         controller: _controllerPassword,
@@ -109,7 +247,7 @@ class _SignUpState extends ConsumerState<SignUp> {
                         ),
                       ),
                       const SizedBox(
-                        height: 20,
+                        height: 10,
                       ),
                       TextFormField(
                         controller: _controllerPasswordConfirmation,
@@ -163,8 +301,11 @@ class _SignUpState extends ConsumerState<SignUp> {
                                   .set({
                                 'username': _controllerUsername.text,
                                 'email': _controllerEmail.text,
-                                'wallet': 0,
-                                'uid': user.uid
+                                'address': _controllerAddress.text,
+                                'birth': selectedDate,
+                                'profile': profile,
+                                'wallet': "0",
+                                'uid': user.uid,
                               });
 
                               Navigator.of(context, rootNavigator: true).pop();

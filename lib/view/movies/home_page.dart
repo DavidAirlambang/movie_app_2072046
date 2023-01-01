@@ -24,14 +24,14 @@ class _HomePageState extends ConsumerState<HomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Theme.of(context).colorScheme.background,
-      appBar: AppBar(
-        title: const Text(
-          "Home Page",
-          style: TextStyle(color: Color(0xFFf4C10F), fontSize: 22),
-        ),
-        centerTitle: true,
-        backgroundColor: Theme.of(context).colorScheme.background,
-      ),
+      // appBar: AppBar(
+      //   title: const Text(
+      //     "Home Page",
+      //     style: TextStyle(color: Color(0xFFf4C10F), fontSize: 22),
+      //   ),
+      //   centerTitle: true,
+      //   backgroundColor: Theme.of(context).colorScheme.background,
+      // ),
       body: Container(
         margin: const EdgeInsets.only(top: 5),
         child: ListView(children: const [

@@ -65,7 +65,6 @@ class _UserEditState extends ConsumerState<UserEdit> {
 
     //riverpod
     final dataUser = ref.watch(userProvider);
-    final profilePic = ref.watch(profileImageProvider);
 
     _controllerUsername.text = dataUser!['username'];
     _controllerAddress.text = dataUser['address'];
@@ -107,11 +106,6 @@ class _UserEditState extends ConsumerState<UserEdit> {
                               child: Container(
                                 decoration: BoxDecoration(
                                   image: DecorationImage(
-                                      // image: profilePic == " "
-                                      //     ? const AssetImage(
-                                      //             './assets/images/img_null.png')
-                                      //         as ImageProvider
-                                      //     : NetworkImage(dataUser['profile'])
                                       image: dataUser['profile'] != null
                                           ? NetworkImage(
                                               dataUser['profile'].toString())
@@ -268,6 +262,11 @@ class _UserEditState extends ConsumerState<UserEdit> {
                                                         .colorScheme
                                                         .primary,
                                                   )));
+
+                                          if (selectedDate == null) {
+                                            selectedDate =
+                                                (dataUser['birth']).toDate();
+                                          } else {}
 
                                           try {
                                             // update username

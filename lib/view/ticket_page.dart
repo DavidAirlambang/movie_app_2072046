@@ -22,14 +22,14 @@ class TicketPage extends ConsumerWidget {
 
     return Scaffold(
         backgroundColor: Theme.of(context).colorScheme.background,
-        appBar: AppBar(
-          title: const Text(
-            "History",
-            style: TextStyle(color: Color(0xFFf4C10F), fontSize: 22),
-          ),
-          centerTitle: true,
-          backgroundColor: Theme.of(context).colorScheme.background,
-        ),
+        // appBar: AppBar(
+        //   title: const Text(
+        //     "History",
+        //     style: TextStyle(color: Color(0xFFf4C10F), fontSize: 22),
+        //   ),
+        //   centerTitle: true,
+        //   backgroundColor: Theme.of(context).colorScheme.background,
+        // ),
         body: data.when(
             data: (data) {
               List<Ticket>? read = ref.watch(ticketStreamProvider).value;

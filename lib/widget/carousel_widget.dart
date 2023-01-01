@@ -26,6 +26,9 @@ class _CarouselState extends State<Carousel> {
         if (snapshot.hasData) {
           return Column(
             children: [
+              const SizedBox(
+                height: 20,
+              ),
               CarouselSlider(
                 items: (snapshot.data ?? [])
                     .map((e) => InkWell(
@@ -55,9 +58,9 @@ class _CarouselState extends State<Carousel> {
                         ))
                     .toList(),
                 options: CarouselOptions(
-                  height: 200,
+                  height: 240,
                   autoPlay: true,
-                  viewportFraction: 0.95,
+                  viewportFraction: 1,
                   autoPlayInterval: const Duration(seconds: 5),
                   onPageChanged: (index, carouselReason) {
                     setState(() {
