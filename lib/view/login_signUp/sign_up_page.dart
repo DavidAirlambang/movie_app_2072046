@@ -280,7 +280,8 @@ class _SignUpState extends ConsumerState<SignUp> {
                                 barrierDismissible: false,
                                 builder: (context) => Center(
                                         child: CircularProgressIndicator(
-                                      color: Theme.of(context).primaryColor,
+                                      color:
+                                          Theme.of(context).colorScheme.primary,
                                     )));
 
                             try {

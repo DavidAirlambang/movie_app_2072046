@@ -161,7 +161,7 @@ class _UserProfilePageState extends ConsumerState<UserProfilePage> {
                     data.when(
                       data: (data) {
                         return SizedBox(
-                          height: 400,
+                          height: 380,
                           child: ListView.builder(
                             itemCount: data.length,
                             itemBuilder: (context, index) {
