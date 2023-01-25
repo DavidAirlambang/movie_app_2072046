@@ -55,7 +55,6 @@ class _UserEditState extends ConsumerState<UserEdit> {
       await storage.putFile(File(image!.path));
       storage.getDownloadURL().then((value) {
         setState(() {
-          ref.read(profileImageProvider.notifier).state = value;
           ref.read(updateUserProvider({'profile': value}));
           ref.read(getUserProvider);
           Navigator.of(context, rootNavigator: true).pop();

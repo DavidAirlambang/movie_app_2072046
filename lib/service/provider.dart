@@ -29,7 +29,7 @@ final getUserProvider = FutureProvider.autoDispose(
 final userProvider = StateProvider<Map?>((ref) => null);
 
 // profile image
-final profileImageProvider = StateProvider<String>((ref) => " ");
+final profileImageProvider = StateProvider.autoDispose<String>((ref) => " ");
 
 final updateImageProvider = FutureProvider(
   (ref) async {
